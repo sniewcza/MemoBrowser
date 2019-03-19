@@ -2,26 +2,36 @@ import React from "react";
 import Swiper from "react-native-web-swiper";
 import { Image, View } from "react-native"
 
-export class ImageSwiper extends React.Component<{ images: [] }, {}>{
+interface ImageSwiperProps {
+    images: any[],
+    activePhotoIndex: number
+}
+export class ImageSwiper extends React.Component<ImageSwiperProps, {}>{
+    shouldComponentUpdate(nextProps: ImageSwiperProps) {
+        if (this.props.images !== nextProps.images) {
+            return true;
+        }
+        return false;
+    }
     render() {
-        const { images } = this.props;
+        console.log(this.props);
+
+        const { images, activePhotoIndex } = this.props;
         return (
-            <Swiper
-
-            >
-                <View style={{ flex: 1 }}>
-                    < Image source={require("../../../assets/desert.jpg")} style={{ width: "100%", height: "100%" }} />
-                </View>
-                <View style={{ flex: 1 }}>
-                    < Image source={require("../../../assets/sea.jpg")} style={{ width: "100%", height: "100%" }} />
-                </View>
-                {/* {images.map(image => {
-                    return (
-                        < Image source={require("../../Assets/desert.jpg")} resizeMode={"contain"} />
-
-                    )
-                })} */}
-            </Swiper>
+            <View style={{ flex: 1 }}>
+                <Swiper
+                    key={Math.random()}
+                    index={activePhotoIndex}
+                    actionMinWidth={0.15}>
+                    {images.map((image, index) => {
+                        return (
+                            <View style={{ flex: 1 }} >
+                                < Image source={image} style={{ width: "100%", height: "100%" }} />
+                            </View>
+                        )
+                    })}
+                </Swiper>
+            </View>
         )
     }
 }
