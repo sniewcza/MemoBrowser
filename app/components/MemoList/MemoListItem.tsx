@@ -11,7 +11,7 @@ export const MemoListItem = (props: any) => {
             rightOpenValue={-75}
             body={
                 <View style={styles.listItem}>
-                    <Text>{props.data}</Text>
+                    <Text>{props.data.name}</Text>
                 </View>
             }
             right={

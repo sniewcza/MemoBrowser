@@ -1,6 +1,6 @@
 import React from "react";
 import Swiper from "react-native-web-swiper";
-import { Image, View } from "react-native"
+import { Image, View, StyleSheet } from "react-native"
 
 interface ImageSwiperProps {
     images: any[],
@@ -14,18 +14,16 @@ export class ImageSwiper extends React.Component<ImageSwiperProps, {}>{
         return false;
     }
     render() {
-        console.log(this.props);
-
         const { images, activePhotoIndex } = this.props;
         return (
-            <View style={{ flex: 1 }}>
+            <View style={styles.container}>
                 <Swiper
-                    key={Math.random()}
+                    key={images.length}
                     index={activePhotoIndex}
                     actionMinWidth={0.15}>
                     {images.map((image, index) => {
                         return (
-                            <View style={{ flex: 1 }} >
+                            <View style={styles.container} key={index}>
                                 < Image source={image} style={{ width: "100%", height: "100%" }} />
                             </View>
                         )
@@ -35,3 +33,8 @@ export class ImageSwiper extends React.Component<ImageSwiperProps, {}>{
         )
     }
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    }
+})

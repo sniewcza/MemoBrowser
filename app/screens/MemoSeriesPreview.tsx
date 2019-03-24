@@ -3,8 +3,12 @@ import { ImageSwiper } from "../components/ImageSwpier/ImageSwiper"
 import { View, Text, StyleSheet } from "react-native"
 import { ImageSwiperBottomBar } from "../components/ImageSwpier/ImageSwiperBottomBar"
 import ImagePicker from 'react-native-image-picker';
+import { connect } from "react-redux"
+import { addMemo } from "../store/index"
+
 interface MemoSeriesPreviewProps {
     navigation: any
+    addmemo: (photoList: any[]) => any
 }
 
 interface MemoSeriesPreviewState {
@@ -12,7 +16,7 @@ interface MemoSeriesPreviewState {
     activePhotoIndex: number
 }
 
-export class MemoSeriesPreview extends React.Component<MemoSeriesPreviewProps, MemoSeriesPreviewState>{
+class MemoSeriesPreview extends React.Component<MemoSeriesPreviewProps, MemoSeriesPreviewState>{
     constructor(props: MemoSeriesPreviewProps) {
         super(props)
         this.state = {
@@ -44,7 +48,10 @@ export class MemoSeriesPreview extends React.Component<MemoSeriesPreviewProps, M
             }))
         }
     }
-
+    addMemo = () => {
+        this.props.addmemo(this.state.photos)
+        this.props.navigation.goBack()
+    }
     noPhotoContent = () => {
         return (
             <View style={{ alignItems: "center" }}>
@@ -68,12 +75,19 @@ export class MemoSeriesPreview extends React.Component<MemoSeriesPreviewProps, M
                 <ImageSwiperBottomBar
                     addCameraPhotoPress={this.takeCameraPhoto}
                     addGaleryPhotoPress={this.takeGaleryPhoto}
-                    donePress={() => alert()} />
+                    donePress={this.addMemo} />
 
             </View>
         )
     }
 }
+
+const mapDispatchToProps = dispatch => {
+    return {
+        addmemo: (photoList: any[]) => dispatch(addMemo(photoList))
+    }
+}
+export const MemoSeriesPreviewScreen = connect(null, mapDispatchToProps)(MemoSeriesPreview)
 
 const styles = StyleSheet.create({
     container: {

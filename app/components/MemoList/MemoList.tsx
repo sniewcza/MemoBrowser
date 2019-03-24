@@ -1,23 +1,11 @@
 import React from "react";
 import { MemoListItem } from "./MemoListItem"
-import { FlatList, View } from "react-native"
-const datas = [
-    'Simon Mignolet',
-    'Nathaniel Clyne',
-    'Dejan Lovren',
-    'Mama Sakho',
-    'Alberto Moreno',
-    'Emre Can',
-    'Joe Allen',
-    'Phil Coutinho',
-    'Mama Sakho',
-    'Alberto Moreno',
-    'Emre Can',
-    'Joe Allen',
-    'Phil Coutinho'
-];
+import { FlatList, View, StyleSheet } from "react-native"
 
-export class MemoList extends React.Component<{}, {}>{
+interface Props {
+    memos: any[]
+}
+export class MemoList extends React.Component<Props>{
     _renderItem = ({ item }) => {
         return (
             < MemoListItem data={item} ></MemoListItem >
@@ -26,9 +14,9 @@ export class MemoList extends React.Component<{}, {}>{
 
     render() {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={styles.container}>
                 <FlatList
-                    data={datas}
+                    data={this.props.memos}
                     renderItem={this._renderItem}
                     keyExtractor={item => Math.random().toString()}
                 >
@@ -37,3 +25,9 @@ export class MemoList extends React.Component<{}, {}>{
         )
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    }
+})
