@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Alert } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
-
+import { deleteMemo } from "../store/index"
+import { deleteMemoAlert } from "../components/Alerts/deleteMemoAlert"
 type Props = {
     navigation: any;
     memos: any[]
+    deleteMemo: (name: string) => any
 };
 class MemoListView extends Component<Props> {
     handlePress = () => {
         this.props.navigation.navigate("MemoSeries")
     }
+    handleDeleteMemo = (name: string) => {
+        deleteMemoAlert(() => this.props.deleteMemo(name))
+    }
     render() {
         return (
             <View style={styles.container}>
-                <MemoList memos={this.props.memos}></MemoList>
+                <MemoList memos={this.props.memos} onDelete={this.handleDeleteMemo}></MemoList>
                 <View style={styles.actionButton}>
                     <ActionButton backgroundColor={"red"} onPress={this.handlePress}></ActionButton>
                 </View>
@@ -29,7 +34,12 @@ const mapStateToProps = state => {
         memos: state.memos.memos
     }
 }
-export const MemoListScreen = connect(mapStateToProps, null)(MemoListView)
+const mapDispatchToProps = dispatch => {
+    return {
+        deleteMemo: (name: string) => dispatch(deleteMemo(name))
+    }
+}
+export const MemoListScreen = connect(mapStateToProps, mapDispatchToProps)(MemoListView)
 const styles = StyleSheet.create({
     container: {
         flex: 1,

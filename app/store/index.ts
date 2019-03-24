@@ -1,1 +1,1 @@
-export { addMemo } from "./actions/memoActions"
+export { addMemo, deleteMemo } from "./actions/memoActions"

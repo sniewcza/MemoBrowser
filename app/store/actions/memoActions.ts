@@ -1,4 +1,4 @@
-import { ADD_MEMO } from "./actionTypes"
+import { ADD_MEMO, DELETE_MEMO } from "./actionTypes"
 import { memo } from "../reducers/memoReducer"
 
 export const addMemo = (photoList: any[]) => {
@@ -9,5 +9,12 @@ export const addMemo = (photoList: any[]) => {
     return {
         type: ADD_MEMO,
         newMemo
+    }
+}
+
+export const deleteMemo = (name: string) => {
+    return {
+        type: DELETE_MEMO,
+        name
     }
 }

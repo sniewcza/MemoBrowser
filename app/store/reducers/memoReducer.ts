@@ -1,4 +1,4 @@
-import { ADD_MEMO } from "../actions/actionTypes"
+import { ADD_MEMO, DELETE_MEMO } from "../actions/actionTypes"
 
 export interface memo {
     name: string
@@ -10,9 +10,13 @@ const defaultState = {
 export const memoReducer = (state = defaultState, action) => {
     switch (action.type) {
         case ADD_MEMO:
-            console.log((action.newMemo));
             return {
                 memos: [...state.memos, action.newMemo]
+            }
+        case DELETE_MEMO:
+            const memos = state.memos.filter(memo => memo.name !== action.name)
+            return {
+                memos
             }
         default:
             return state
