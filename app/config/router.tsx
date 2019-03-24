@@ -4,7 +4,7 @@ import { MemoListScreen } from "../screens/MemoListScreen"
 import secondScreen from "../screens/SecondScreen"
 import { MemoSeriesPreviewScreen } from "../screens/MemoSeriesPreview"
 import Icon from "react-native-vector-icons/Ionicons"
-
+import { MemoSeriesDetails } from "../screens/MemoSeriesDetails"
 const tabNavigator = createBottomTabNavigator({
     First: {
         screen: MemoListScreen,
@@ -24,6 +24,9 @@ const routeNavigator = createStackNavigator({
     },
     MemoSeries: {
         screen: MemoSeriesPreviewScreen,
+    },
+    MemoSeriesDetails: {
+        screen: MemoSeriesDetails
     }
 })
 export default createAppContainer(routeNavigator);

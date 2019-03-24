@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, memo } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
@@ -11,18 +11,23 @@ type Props = {
     deleteMemo: (name: string) => any
 };
 class MemoListView extends Component<Props> {
-    handlePress = () => {
+    handleActionButtonPress = () => {
         this.props.navigation.navigate("MemoSeries")
     }
     handleDeleteMemo = (name: string) => {
         deleteMemoAlert(() => this.props.deleteMemo(name))
     }
+    handleMemoItemPress = (name: string) => {
+        const memoItem = this.props.memos.find(memo => memo.name === name)
+        this.props.navigation.push("MemoSeriesDetails", { photos: memoItem.photos })
+    }
+
     render() {
         return (
             <View style={styles.container}>
-                <MemoList memos={this.props.memos} onDelete={this.handleDeleteMemo}></MemoList>
+                <MemoList memos={this.props.memos} onItemPress={this.handleMemoItemPress} onDelete={this.handleDeleteMemo}></MemoList>
                 <View style={styles.actionButton}>
-                    <ActionButton backgroundColor={"red"} onPress={this.handlePress}></ActionButton>
+                    <ActionButton backgroundColor={"red"} onPress={this.handleActionButtonPress}></ActionButton>
                 </View>
             </View>
         );

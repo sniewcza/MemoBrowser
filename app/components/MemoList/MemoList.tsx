@@ -5,11 +5,12 @@ import { FlatList, View, StyleSheet } from "react-native"
 interface Props {
     memos: any[]
     onDelete: (name: string) => any
+    onItemPress: (name: string) => any
 }
 export class MemoList extends React.Component<Props>{
     _renderItem = ({ item }) => {
         return (
-            < MemoListItem name={item.name} onDelete={this.props.onDelete} ></MemoListItem >
+            < MemoListItem name={item.name} onPress={this.props.onItemPress} onDelete={this.props.onDelete} ></MemoListItem >
         )
     }
 

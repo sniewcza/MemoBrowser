@@ -2,11 +2,11 @@ import React from 'react';
 import Icon from "react-native-vector-icons/Ionicons"
 import { TouchableWithoutFeedback, View, StyleSheet } from 'react-native'
 
-interface ActionButtonProps {
+interface Props {
     onPress?: () => any,
     backgroundColor?: string
 }
-export class ActionButton extends React.PureComponent<ActionButtonProps, {}> {
+export class ActionButton extends React.PureComponent<Props> {
     render() {
         return (
             <TouchableWithoutFeedback onPress={this.props.onPress} >

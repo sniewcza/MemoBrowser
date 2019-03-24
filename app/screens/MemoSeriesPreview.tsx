@@ -26,10 +26,20 @@ class MemoSeriesPreview extends React.Component<MemoSeriesPreviewProps, MemoSeri
     }
 
     takeCameraPhoto = () => {
-        ImagePicker.launchCamera({ noData: true }, this.handleNewImage)
+        ImagePicker.launchCamera({
+            noData: true, mediaType: 'photo', storageOptions: {
+                cameraRoll: true,
+                waitUntilSaved: true,
+            }
+        }, this.handleNewImage)
     }
     takeGaleryPhoto = () => {
-        ImagePicker.launchImageLibrary({ noData: true }, this.handleNewImage)
+        ImagePicker.launchImageLibrary({
+            noData: true, mediaType: 'photo', storageOptions: {
+                cameraRoll: true,
+                waitUntilSaved: true,
+            }
+        }, this.handleNewImage)
     }
 
     handleNewImage = response => {
@@ -42,8 +52,10 @@ class MemoSeriesPreview extends React.Component<MemoSeriesPreviewProps, MemoSeri
             console.log('User tapped custom button: ', response.customButton);
         } else {
             const source = { uri: response.uri };
+            //console.log(response.path);
+
             this.setState(prevState => ({
-                photos: [...prevState.photos, source],
+                photos: [...prevState.photos, response],
                 activePhotoIndex: prevState.photos.length
             }))
         }
