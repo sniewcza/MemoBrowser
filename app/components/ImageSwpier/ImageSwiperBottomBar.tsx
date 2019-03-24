@@ -3,13 +3,14 @@ import Icon from "react-native-vector-icons/Ionicons"
 import { View, StyleSheet, TouchableOpacity } from "react-native"
 
 interface ImageSwiperBottomBarProps {
-    addCameraPhotoPress: () => any,
-    addGaleryPhotoPress: () => any,
+    doneButtonActive: boolean;
+    addCameraPhotoPress: () => any;
+    addGaleryPhotoPress: () => any;
     donePress: () => any
 }
 export class ImageSwiperBottomBar extends React.PureComponent<ImageSwiperBottomBarProps, {}> {
     render() {
-        const { addCameraPhotoPress, addGaleryPhotoPress, donePress } = this.props
+        const { addCameraPhotoPress, addGaleryPhotoPress, donePress, doneButtonActive } = this.props
         return (
             <View style={styles.container}>
                 <TouchableOpacity onPress={addCameraPhotoPress}>
@@ -18,7 +19,7 @@ export class ImageSwiperBottomBar extends React.PureComponent<ImageSwiperBottomB
                 <TouchableOpacity onPress={addGaleryPhotoPress}>
                     <Icon name={"md-image"} size={35} color={"red"}></Icon>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={donePress}>
+                <TouchableOpacity style={doneButtonActive ? null : styles.inAcvtive} onPress={donePress} disabled={!doneButtonActive}>
                     <Icon name={"md-checkmark"} size={35} color={"red"}></Icon>
                 </TouchableOpacity>
             </View >
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-evenly",
         alignItems: "center",
     },
-    button: {
-        marginRight: 20
+    inAcvtive: {
+        opacity: 0.4
     }
 })

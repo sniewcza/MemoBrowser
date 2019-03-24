@@ -75,7 +75,8 @@ class MemoSeriesPreview extends React.Component<MemoSeriesPreviewProps, MemoSeri
                 <ImageSwiperBottomBar
                     addCameraPhotoPress={this.takeCameraPhoto}
                     addGaleryPhotoPress={this.takeGaleryPhoto}
-                    donePress={this.addMemo} />
+                    donePress={this.addMemo}
+                    doneButtonActive={this.state.photos.length === 0 ? false : true} />
 
             </View>
         )
