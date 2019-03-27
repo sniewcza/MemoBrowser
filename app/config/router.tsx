@@ -10,23 +10,35 @@ const tabNavigator = createBottomTabNavigator({
         screen: MemoListScreen,
         navigationOptions: {
             title: "Memos",
+            tabBarLabel: "Your Memos",
             tabBarIcon: () => <Icon name={"md-list-box"} size={30}></Icon>
-        }
+        },
+
     },
     Second: secondScreen,
 
-})
+}, {
+        tabBarOptions: {
+            labelStyle: {
+                fontSize: 16,
+            }
+        }
+    })
 
 const routeNavigator = createStackNavigator({
     Default: {
         screen: tabNavigator,
-
     },
     MemoSeries: {
         screen: MemoSeriesPreviewScreen,
+        navigationOptions: {
+            title: "Memo Series"
+        }
     },
     MemoSeriesDetails: {
         screen: MemoSeriesDetails
     }
-})
+}, {
+        headerMode: "screen"
+    })
 export default createAppContainer(routeNavigator);

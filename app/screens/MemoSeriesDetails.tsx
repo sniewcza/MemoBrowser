@@ -17,10 +17,12 @@ export class MemoSeriesDetails extends React.Component<Props, State> {
     }
 
     _renderItem = ({ item }) => {
+        console.log(item);
+
         const aspectRatio = item.height / item.width
         return (
             <View style={{ width: DEVICE_WIDTH, height: DEVICE_WIDTH * aspectRatio }} >
-                <Image source={item} resizeMode={"contain"} style={{ flex: 1,width:"100%", height:"100%" }} />
+                <Image source={{ uri: `file:///${item.path}` }} resizeMode={"contain"} style={{ flex: 1, width: "100%", height: "100%" }} />
             </View>
         )
     }

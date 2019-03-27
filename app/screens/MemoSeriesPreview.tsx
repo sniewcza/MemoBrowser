@@ -28,16 +28,18 @@ class MemoSeriesPreview extends React.Component<MemoSeriesPreviewProps, MemoSeri
     takeCameraPhoto = () => {
         ImagePicker.launchCamera({
             noData: true, mediaType: 'photo', storageOptions: {
-                cameraRoll: true,
-                waitUntilSaved: true,
+                path: "MemoBrowser",
+                // cameraRoll: true,
+                // waitUntilSaved: true,
             }
         }, this.handleNewImage)
     }
     takeGaleryPhoto = () => {
         ImagePicker.launchImageLibrary({
             noData: true, mediaType: 'photo', storageOptions: {
-                cameraRoll: true,
-                waitUntilSaved: true,
+                path: "MemoBrowser",
+                // cameraRoll: true,
+                // waitUntilSaved: true,
             }
         }, this.handleNewImage)
     }

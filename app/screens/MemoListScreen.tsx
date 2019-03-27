@@ -1,14 +1,15 @@
-import React, { Component, memo } from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
-import { deleteMemo } from "../store/index"
+import { deleteMemo, loadMemos } from "../store/index"
 import { deleteMemoAlert } from "../components/Alerts/deleteMemoAlert"
 type Props = {
     navigation: any;
     memos: any[]
     deleteMemo: (name: string) => any
+    loadMemos: () => any
 };
 class MemoListView extends Component<Props> {
     handleActionButtonPress = () => {
@@ -22,6 +23,11 @@ class MemoListView extends Component<Props> {
         this.props.navigation.push("MemoSeriesDetails", { photos: memoItem.photos })
     }
 
+    componentDidMount() {
+        if (this.props.memos.length === 0) {
+            this.props.loadMemos()
+        }
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -41,7 +47,8 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => {
     return {
-        deleteMemo: (name: string) => dispatch(deleteMemo(name))
+        deleteMemo: (name: string) => dispatch(deleteMemo(name)),
+        loadMemos: () => dispatch(loadMemos())
     }
 }
 export const MemoListScreen = connect(mapStateToProps, mapDispatchToProps)(MemoListView)
