@@ -2,69 +2,77 @@ import React from "react";
 import { ImageSwiper } from "../components/ImageSwpier/ImageSwiper"
 import { View, Text, StyleSheet } from "react-native"
 import { ImageSwiperBottomBar } from "../components/ImageSwpier/ImageSwiperBottomBar"
-import ImagePicker from 'react-native-image-picker';
+import { DeletePhotoHeaderButton } from "../components/Buttons/DeletePhotoHeaderButton"
+import ImagePicker from "../api/ImagePicker"
 import { connect } from "react-redux"
 import { addMemo } from "../store/index"
 
-interface MemoSeriesPreviewProps {
+interface Props {
     navigation: any
     addmemo: (photoList: any[]) => any
 }
 
-interface MemoSeriesPreviewState {
+interface State {
     photos: any[],
     activePhotoIndex: number
 }
 
-class MemoSeriesPreview extends React.Component<MemoSeriesPreviewProps, MemoSeriesPreviewState>{
-    constructor(props: MemoSeriesPreviewProps) {
+class MemoSeriesPreview extends React.Component<Props, State>{
+    constructor(props: Props) {
         super(props)
         this.state = {
             photos: [],
             activePhotoIndex: -1
         }
     }
+    static navigationOptions = ({ navigation }) => {
+        return {
+            headerRight: <DeletePhotoHeaderButton
+                onPress={navigation.getParam('deleteHandler')}>
+            </DeletePhotoHeaderButton>
+        };
+    };
 
-    takeCameraPhoto = () => {
-        ImagePicker.launchCamera({
-            noData: true, mediaType: 'photo', storageOptions: {
-                path: "MemoBrowser",
-                // cameraRoll: true,
-                // waitUntilSaved: true,
-            }
-        }, this.handleNewImage)
+    componentDidMount() {
+        this.props.navigation.setParams({ deleteHandler: this.deleteMemo });
     }
-    takeGaleryPhoto = () => {
-        ImagePicker.launchImageLibrary({
-            noData: true, mediaType: 'photo', storageOptions: {
-                path: "MemoBrowser",
-                // cameraRoll: true,
-                // waitUntilSaved: true,
-            }
-        }, this.handleNewImage)
-    }
-
-    handleNewImage = response => {
-        if (response.didCancel) {
-            console.log('User cancelled image picker');
-            this.props.navigation.goBack();
-        } else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-        } else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
-        } else {
-            const source = { uri: response.uri };
-            //console.log(response.path);
-
+    takeCameraPhoto = async () => {
+        const photo = await ImagePicker.takeCameraPhoto()
+        if (photo) {
             this.setState(prevState => ({
-                photos: [...prevState.photos, response],
+                photos: [...prevState.photos, photo],
                 activePhotoIndex: prevState.photos.length
             }))
         }
     }
+    takeGaleryPhoto = async () => {
+        const photo = await ImagePicker.takeGaleryPhoto()
+        if (photo) {
+            this.setState(prevState => ({
+                photos: [...prevState.photos, photo],
+                activePhotoIndex: prevState.photos.length
+            }))
+        }
+    }
+
     addMemo = () => {
         this.props.addmemo(this.state.photos)
         this.props.navigation.goBack()
+    }
+    deleteMemo = () => {
+        if (this.state.photos.length !== 0) {
+            this.setState(prevState => ({
+                photos: prevState.photos.filter((item, index) => index !== prevState.activePhotoIndex),
+                activePhotoIndex: prevState.activePhotoIndex === prevState.photos.length - 1 ?
+                    prevState.activePhotoIndex - 1 : prevState.activePhotoIndex
+            }))
+
+        }
+    }
+    handleSwipe = (index: number) => {
+        this.setState({
+            activePhotoIndex: index
+        })
     }
     noPhotoContent = () => {
         return (
@@ -82,6 +90,7 @@ class MemoSeriesPreview extends React.Component<MemoSeriesPreviewProps, MemoSeri
                         <ImageSwiper
                             images={this.state.photos}
                             activePhotoIndex={this.state.activePhotoIndex}
+                            onIndexChange={this.handleSwipe}
                         >
                         </ImageSwiper>
                     }

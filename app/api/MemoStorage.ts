@@ -1,5 +1,6 @@
 import { AsyncStorage } from "react-native"
 
+
 const STORE_NAME = '@MemoStore'
 export const createMemoSnapshoot = async (name: string, photos: any[]) => {
     const dataObject = JSON.stringify(photos)

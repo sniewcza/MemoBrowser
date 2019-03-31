@@ -2,23 +2,25 @@ import React from "react";
 import Swiper from "react-native-web-swiper";
 import { Image, View, StyleSheet } from "react-native"
 
-interface ImageSwiperProps {
+interface Props {
     images: any[],
-    activePhotoIndex: number
+    activePhotoIndex: number,
+    onIndexChange: (index: number) => any
 }
-export class ImageSwiper extends React.Component<ImageSwiperProps, {}>{
-    shouldComponentUpdate(nextProps: ImageSwiperProps) {
+export class ImageSwiper extends React.Component<Props>{
+    shouldComponentUpdate(nextProps: Props) {
         if (this.props.images !== nextProps.images) {
             return true;
         }
         return false;
     }
     render() {
-        const { images, activePhotoIndex } = this.props;
+        const { images, activePhotoIndex, onIndexChange } = this.props;
         return (
             <View style={styles.container}>
                 <Swiper
                     key={images.length}
+                    onIndexChanged={onIndexChange}
                     index={activePhotoIndex}
                     actionMinWidth={0.15}>
                     {images.map((image, index) => {
