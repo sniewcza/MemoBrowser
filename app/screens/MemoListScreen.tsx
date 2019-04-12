@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
-import { deleteMemo, loadMemos } from "../store/index"
+import { removeMemo, loadMemos } from "../store/index"
 import { deleteMemoAlert } from "../components/Alerts/deleteMemoAlert"
 type Props = {
     navigation: any;
@@ -47,7 +47,7 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => {
     return {
-        deleteMemo: (name: string) => dispatch(deleteMemo(name)),
+        deleteMemo: (name: string) => dispatch(removeMemo(name)),
         loadMemos: () => dispatch(loadMemos())
     }
 }

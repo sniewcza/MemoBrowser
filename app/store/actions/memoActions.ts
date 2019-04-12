@@ -1,7 +1,8 @@
 import { ADD_MEMO, DELETE_MEMO, LOAD_MEMOS } from "./actionTypes"
 import { memo } from "../reducers/memoReducer"
 import { createMemoSnapshoot } from "../../api/MemoStorage"
-import { getMemoList } from "../../api/MemoStorage"
+import { getMemoList, deleteMemo } from "../../api/MemoStorage"
+
 export const addMemo = (photoList: any[]) => {
     return async dispatch => {
         const newMemo: memo = {
@@ -25,9 +26,13 @@ export const loadMemos = () => {
         })
     }
 }
-export const deleteMemo = (name: string) => {
-    return {
-        type: DELETE_MEMO,
-        name
+
+export const removeMemo = (name: string) => {
+    return async dispatch => {
+        await deleteMemo(name)
+        dispatch({
+            type: DELETE_MEMO,
+            name
+        })
     }
 }
