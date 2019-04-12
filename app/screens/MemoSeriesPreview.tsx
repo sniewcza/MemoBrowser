@@ -10,7 +10,7 @@ import { addMemo } from "../store/index"
 
 interface Props {
     navigation: any
-    addmemo: (photoList: any[]) => any
+    addmemo: (name: string, photoList: any[]) => any
 }
 
 interface State {
@@ -64,7 +64,8 @@ class MemoSeriesPreview extends React.Component<Props, State>{
     }
 
     addMemo = () => {
-        this.props.addmemo(this.state.photos)
+        const {descriptionText,photos} = this.state
+        this.props.addmemo(descriptionText,photos)
         this.props.navigation.goBack()
     }
 
@@ -155,7 +156,7 @@ class MemoSeriesPreview extends React.Component<Props, State>{
 }
 
 const mapDispatchToProps = dispatch => ({
-    addmemo: (photoList: any[]) => dispatch(addMemo(photoList))
+    addmemo: (name: string, photoList: any[]) => dispatch(addMemo(name, photoList))
 })
 
 export const MemoSeriesPreviewScreen = connect(null, mapDispatchToProps)(MemoSeriesPreview)

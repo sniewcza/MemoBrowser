@@ -4,9 +4,10 @@ import { Text, View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } fr
 import Icon from "react-native-vector-icons/Ionicons"
 
 interface Props {
+    id: string
     name: string
-    onDelete: (name: string) => any;
-    onPress: (name: string) => any
+    onDelete: (id: string) => any;
+    onPress: (id: string) => any
 }
 export class MemoListItem extends React.PureComponent<Props>{
     constructor(props) {
@@ -15,10 +16,10 @@ export class MemoListItem extends React.PureComponent<Props>{
     }
     deleteMemo = () => {
         this.row._root.closeRow();
-        this.props.onDelete(this.props.name)
+        this.props.onDelete(this.props.id)
     }
     onPress = () => {
-        this.props.onPress(this.props.name)
+        this.props.onPress(this.props.id)
     }
     render() {
         return (

@@ -1,5 +1,6 @@
 import React from "react"
 import { FlatList, View, Image, StyleSheet, Dimensions } from "react-native"
+import { Memo } from "../model/Memo";
 
 interface Props {
     navigation: any
@@ -17,8 +18,6 @@ export class MemoSeriesDetails extends React.Component<Props, State> {
     }
 
     _renderItem = ({ item }) => {
-        console.log(item);
-
         const aspectRatio = item.height / item.width
         return (
             <View style={{ width: DEVICE_WIDTH, height: DEVICE_WIDTH * aspectRatio }} >
@@ -31,7 +30,7 @@ export class MemoSeriesDetails extends React.Component<Props, State> {
             <View style={styles.container} >
                 <FlatList data={this.state.photos}
                     renderItem={this._renderItem}
-                    keyExtractor={item => Math.random().toString()}
+                    keyExtractor={(item: Memo) => item.id}
                     ItemSeparatorComponent={() => <View style={{ height: 5 }}></View>}>
                 </FlatList>
             </View>

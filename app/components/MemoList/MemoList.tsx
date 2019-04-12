@@ -1,16 +1,17 @@
 import React from "react";
 import { MemoListItem } from "./MemoListItem"
 import { FlatList, View, StyleSheet } from "react-native"
+import { Memo } from "../../model/Memo"
 
 interface Props {
-    memos: any[]
-    onDelete: (name: string) => any
-    onItemPress: (name: string) => any
+    memos: Memo[]
+    onDelete: (id: string) => any
+    onItemPress: (id: string) => any
 }
 export class MemoList extends React.Component<Props>{
     _renderItem = ({ item }) => {
         return (
-            < MemoListItem name={item.name} onPress={this.props.onItemPress} onDelete={this.props.onDelete} ></MemoListItem >
+            < MemoListItem id={item.id} name={item.name} onPress={this.props.onItemPress} onDelete={this.props.onDelete} ></MemoListItem >
         )
     }
 
@@ -20,7 +21,7 @@ export class MemoList extends React.Component<Props>{
                 <FlatList
                     data={this.props.memos}
                     renderItem={this._renderItem}
-                    keyExtractor={item => Math.random().toString()}
+                    keyExtractor={(item: Memo) => item.id}
                 >
                 </FlatList>
             </View>

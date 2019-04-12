@@ -1,20 +1,17 @@
 import { ADD_MEMO, DELETE_MEMO, LOAD_MEMOS } from "../actions/actionTypes"
+import { Memo } from "../../model/Memo"
 
-export interface memo {
-    name: string
-    photos: any[]
-}
 const defaultState = {
-    memos: Array<memo>()
+    memos: Array<Memo>()
 }
-export const memoReducer = (state = defaultState, action) => {
+export const memoReducer = (state = defaultState, action: any) => {
     switch (action.type) {
         case ADD_MEMO:
             return {
                 memos: [...state.memos, action.newMemo]
             }
         case DELETE_MEMO:
-            const memos = state.memos.filter(memo => memo.name !== action.name)
+            const memos = state.memos.filter(memo => memo.id !== action.id)
             return {
                 memos
             }

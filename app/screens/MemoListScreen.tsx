@@ -5,10 +5,11 @@ import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
 import { removeMemo, loadMemos } from "../store/index"
 import { deleteMemoAlert } from "../components/Alerts/deleteMemoAlert"
+import { Memo } from "../model/Memo"
 
 type Props = {
     navigation: any;
-    memos: any[]
+    memos: Memo[]
     deleteMemo: (name: string) => any
     loadMemos: () => any
 };
@@ -24,12 +25,12 @@ class MemoListView extends Component<Props> {
         this.props.navigation.navigate("MemoSeries")
     }
 
-    handleDeleteMemo = (name: string) => {
-        deleteMemoAlert(() => this.props.deleteMemo(name))
+    handleDeleteMemo = (id: string) => {
+        deleteMemoAlert(() => this.props.deleteMemo(id))
     }
 
-    handleMemoItemPress = (name: string) => {
-        const memoItem = this.props.memos.find(memo => memo.name === name)
+    handleMemoItemPress = (id: string) => {
+        const memoItem = this.props.memos.find(memo => memo.id === id)
         this.props.navigation.push("MemoSeriesDetails", { photos: memoItem.photos })
     }
 
