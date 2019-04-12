@@ -1,8 +1,9 @@
 import React from "react";
 import { ImageSwiper } from "../components/ImageSwpier/ImageSwiper"
-import { View, Text, StyleSheet } from "react-native"
+import { Modal, View, Text, StyleSheet } from "react-native"
 import { ImageSwiperBottomBar } from "../components/ImageSwpier/ImageSwiperBottomBar"
 import { DeletePhotoHeaderButton } from "../components/Buttons/DeletePhotoHeaderButton"
+import { MemoDescriptionTextInput } from "../components/TextInputs/MemoDescriptionTextInput"
 import ImagePicker from "../api/ImagePicker"
 import { connect } from "react-redux"
 import { addMemo } from "../store/index"
@@ -14,7 +15,9 @@ interface Props {
 
 interface State {
     photos: any[],
-    activePhotoIndex: number
+    activePhotoIndex: number;
+    descriptionText: string
+    modalActive: boolean
 }
 
 class MemoSeriesPreview extends React.Component<Props, State>{
@@ -22,9 +25,12 @@ class MemoSeriesPreview extends React.Component<Props, State>{
         super(props)
         this.state = {
             photos: [],
-            activePhotoIndex: -1
+            activePhotoIndex: -1,
+            modalActive: false,
+            descriptionText: ""
         }
     }
+
     static navigationOptions = ({ navigation }) => {
         return {
             headerRight: <DeletePhotoHeaderButton
@@ -34,8 +40,9 @@ class MemoSeriesPreview extends React.Component<Props, State>{
     };
 
     componentDidMount() {
-        this.props.navigation.setParams({ deleteHandler: this.deleteMemo });
+        this.props.navigation.setParams({ deleteHandler: this.deletePhoto });
     }
+
     takeCameraPhoto = async () => {
         const photo = await ImagePicker.takeCameraPhoto()
         if (photo) {
@@ -45,6 +52,7 @@ class MemoSeriesPreview extends React.Component<Props, State>{
             }))
         }
     }
+
     takeGaleryPhoto = async () => {
         const photo = await ImagePicker.takeGaleryPhoto()
         if (photo) {
@@ -59,21 +67,45 @@ class MemoSeriesPreview extends React.Component<Props, State>{
         this.props.addmemo(this.state.photos)
         this.props.navigation.goBack()
     }
-    deleteMemo = () => {
+
+    deletePhoto = () => {
         if (this.state.photos.length !== 0) {
-            this.setState(prevState => ({
-                photos: prevState.photos.filter((item, index) => index !== prevState.activePhotoIndex),
-                activePhotoIndex: prevState.activePhotoIndex === prevState.photos.length - 1 ?
-                    prevState.activePhotoIndex - 1 : prevState.activePhotoIndex
-            }))
+            this.setState(prevState => {
+                const { photos, activePhotoIndex } = prevState
+                return {
+                    photos: photos.filter((item, index) => index !== activePhotoIndex),
+                    activePhotoIndex: activePhotoIndex === photos.length - 1 ?
+                        activePhotoIndex - 1 : activePhotoIndex
+                }
+            })
 
         }
     }
+
     handleSwipe = (index: number) => {
         this.setState({
             activePhotoIndex: index
         })
     }
+
+    addDesctiption = () => {
+        this.setState({
+            modalActive: true
+        })
+    }
+
+    onDescriptionTextChange = (text: string) => {
+        this.setState({
+            descriptionText: text
+        })
+    }
+
+    onDescriptionAccept = () => {
+        this.setState({
+            modalActive: false
+        })
+    }
+
     noPhotoContent = () => {
         return (
             <View style={{ alignItems: "center" }}>
@@ -81,9 +113,24 @@ class MemoSeriesPreview extends React.Component<Props, State>{
             </View>
         )
     }
+
     render() {
         return (
             <View style={styles.container}>
+                <Modal
+                    transparent
+                    visible={this.state.modalActive}
+                    onRequestClose={() => this.setState({
+                        modalActive: false
+                    })}>
+                    <MemoDescriptionTextInput
+                        visible={this.state.modalActive}
+                        text={this.state.descriptionText}
+                        onTextChange={this.onDescriptionTextChange}
+                        onAccept={this.onDescriptionAccept}
+                    >
+                    </MemoDescriptionTextInput>
+                </Modal>
                 <View style={styles.mainContent}>
                     {this.state.photos.length === 0 ?
                         this.noPhotoContent() :
@@ -98,6 +145,7 @@ class MemoSeriesPreview extends React.Component<Props, State>{
                 <ImageSwiperBottomBar
                     addCameraPhotoPress={this.takeCameraPhoto}
                     addGaleryPhotoPress={this.takeGaleryPhoto}
+                    addDescriptionPress={this.addDesctiption}
                     donePress={this.addMemo}
                     doneButtonActive={this.state.photos.length === 0 ? false : true} />
 
@@ -106,11 +154,10 @@ class MemoSeriesPreview extends React.Component<Props, State>{
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        addmemo: (photoList: any[]) => dispatch(addMemo(photoList))
-    }
-}
+const mapDispatchToProps = dispatch => ({
+    addmemo: (photoList: any[]) => dispatch(addMemo(photoList))
+})
+
 export const MemoSeriesPreviewScreen = connect(null, mapDispatchToProps)(MemoSeriesPreview)
 
 const styles = StyleSheet.create({
