@@ -10,11 +10,9 @@
     "linkLib": "react-native link"
   },
   "dependencies": {
-    "@types/react-native-vector-icons": "^4.6.4",
-    "@types/react-redux": "^7.0.5",
     "native-base": "^2.12.1",
     "react": "16.8.3",
-    "react-native": "0.59.1",
+    "react-native": "0.59.4",
     "react-native-gesture-handler": "~1.0.14",
     "react-native-image-picker": "^0.28.0",
     "react-native-vector-icons": "^6.4.1",
@@ -25,6 +23,8 @@
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
+    "@types/react-native-vector-icons": "^4.6.4",
+    "@types/react-redux": "^7.0.5",
     "@babel/core": "^7.3.4",
     "@babel/runtime": "^7.3.4",
     "@types/react": "^16.8.8",
