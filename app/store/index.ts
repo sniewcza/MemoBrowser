@@ -1,1 +1,1 @@
-export { addMemo, removeMemo, loadMemos } from "./actions/memoActions"
+export { addMemo, removeMemo, loadMemos, renameMemo } from "./actions/memoActions"

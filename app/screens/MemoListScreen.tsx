@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
-import { removeMemo, loadMemos } from "../store/index"
+import { removeMemo, loadMemos, renameMemo } from "../store/index"
 import { deleteMemoAlert } from "../components/Alerts/deleteMemoAlert"
 import { Memo } from "../model/Memo"
 
@@ -12,6 +12,7 @@ type Props = {
     memos: Memo[]
     deleteMemo: (name: string) => any
     loadMemos: () => any
+    renameMemo: (id: string, newName: string) => any
 };
 
 class MemoListView extends Component<Props> {
@@ -34,12 +35,26 @@ class MemoListView extends Component<Props> {
         this.props.navigation.push("MemoSeriesDetails", { photos: memoItem.photos })
     }
 
+    handleRenameMemo = (id: string, newName: string) => {
+        this.props.renameMemo(id, newName)
+    }
+
     render() {
         return (
             <View style={styles.container}>
-                <MemoList memos={this.props.memos} onItemPress={this.handleMemoItemPress} onDelete={this.handleDeleteMemo}></MemoList>
+                <MemoList
+                    memos={this.props.memos}
+                    onItemPress={this.handleMemoItemPress}
+                    onDelete={this.handleDeleteMemo}
+                    onRename={this.handleRenameMemo}
+                >
+
+                </MemoList>
                 <View style={styles.actionButton}>
-                    <ActionButton backgroundColor={"red"} onPress={this.handleActionButtonPress}></ActionButton>
+                    <ActionButton
+                        backgroundColor={"red"}
+                        onPress={this.handleActionButtonPress}>
+                    </ActionButton>
                 </View>
             </View>
         );
@@ -51,13 +66,17 @@ const mapStateToProps = state => {
         memos: state.memos.memos
     }
 }
+
 const mapDispatchToProps = dispatch => {
     return {
         deleteMemo: (name: string) => dispatch(removeMemo(name)),
-        loadMemos: () => dispatch(loadMemos())
+        loadMemos: () => dispatch(loadMemos()),
+        renameMemo: (id: string, newName: string) => dispatch(renameMemo(id, newName))
     }
 }
+
 export const MemoListScreen = connect(mapStateToProps, mapDispatchToProps)(MemoListView)
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

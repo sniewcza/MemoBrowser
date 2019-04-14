@@ -3,22 +3,38 @@ import { Memo } from "../model/Memo"
 
 const STORE_NAME = '@MemoStore'
 
-export const createMemoSnapshoot = async (memo: Memo) => {
-    const dataObject = JSON.stringify(memo)
-    await AsyncStorage.setItem(`${STORE_NAME}:${memo.id}`, dataObject)
-}
+class MemoStorage {
 
-export const getMemoList = async () => {
-    const keys = await AsyncStorage.getAllKeys();
-    let memoList = [];
-    for (let key of keys) {
-        const JsonData = await AsyncStorage.getItem(key)
-        const memo: Memo = JSON.parse(JsonData);
-        memoList.push(memo)
+    createMemoSnapshoot = async (memo: Memo) => {
+        const dataObject = JSON.stringify(memo)
+        await AsyncStorage.setItem(`${STORE_NAME}:${memo.id}`, dataObject)
     }
-    return memoList
+
+    getMemoList = async () => {
+        const keys = await AsyncStorage.getAllKeys();
+        let memoList = [];
+        for (let key of keys) {
+            const JsonData = await AsyncStorage.getItem(key)
+            const memo: Memo = JSON.parse(JsonData);
+            memoList.push(memo)
+        }
+        return memoList
+    }
+
+    deleteMemo = async (id: string) => {
+        await AsyncStorage.removeItem(`${STORE_NAME}:${id}`)
+    }
+
+    renameMemo = async (id: string, newName: string) => {
+        const key = `${STORE_NAME}:${id}`
+        const memo: Memo = JSON.parse(await AsyncStorage.getItem(key))
+        if (memo) {
+            memo.name = newName
+            const dataObject = JSON.stringify(memo)
+            await AsyncStorage.setItem(key, dataObject)
+        }
+        return memo
+    }
 }
 
-export const deleteMemo = async (id: string) => {
-    await AsyncStorage.removeItem(`${STORE_NAME}:${id}`)
-}
+export const memoStorage = new MemoStorage()

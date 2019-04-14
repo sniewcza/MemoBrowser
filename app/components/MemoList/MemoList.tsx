@@ -7,11 +7,20 @@ interface Props {
     memos: Memo[]
     onDelete: (id: string) => any
     onItemPress: (id: string) => any
+    onRename: (id: string, newName: string) => any
 }
+
 export class MemoList extends React.Component<Props>{
     _renderItem = ({ item }) => {
         return (
-            < MemoListItem id={item.id} name={item.name} onPress={this.props.onItemPress} onDelete={this.props.onDelete} ></MemoListItem >
+            < MemoListItem
+                id={item.id}
+                name={item.name}
+                onPress={this.props.onItemPress}
+                onDelete={this.props.onDelete}
+                onRename={this.props.onRename}
+            >
+            </MemoListItem >
         )
     }
 

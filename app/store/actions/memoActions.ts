@@ -1,8 +1,6 @@
 import { ADD_MEMO, DELETE_MEMO, LOAD_MEMOS } from "./actionTypes"
 import { Memo } from "../../model/Memo"
-import { createMemoSnapshoot } from "../../api/MemoStorage"
-import { getMemoList, deleteMemo } from "../../api/MemoStorage"
-
+import { memoStorage } from "../../api/MemoStorage"
 
 export const addMemo = (description: string, photoList: any[]) => {
     return async dispatch => {
@@ -15,7 +13,7 @@ export const addMemo = (description: string, photoList: any[]) => {
             id: Math.random().toString(),
             photos: photoList
         }
-        await createMemoSnapshoot(newMemo)
+        await memoStorage.createMemoSnapshoot(newMemo)
         dispatch({
             type: ADD_MEMO,
             newMemo
@@ -25,7 +23,7 @@ export const addMemo = (description: string, photoList: any[]) => {
 
 export const loadMemos = () => {
     return async dispatch => {
-        const memoList = await getMemoList();
+        const memoList = await memoStorage.getMemoList();
         dispatch({
             type: LOAD_MEMOS,
             memoList
@@ -35,10 +33,23 @@ export const loadMemos = () => {
 
 export const removeMemo = (id: string) => {
     return async dispatch => {
-        await deleteMemo(id)
+        await memoStorage.deleteMemo(id)
         dispatch({
             type: DELETE_MEMO,
             id
+        })
+    }
+}
+
+export const renameMemo = (id: string, newName: string) => {
+    return async (dispatch, getState) => {
+        const renamedMemo: Memo = await memoStorage.renameMemo(id, newName)
+        const memoList: Memo[] = getState().memos.memos
+        const index = memoList.findIndex(item => item.id === renamedMemo.id)
+        const newList = [...memoList.slice(0, index), renamedMemo, ...memoList.slice(index + 1)]
+        dispatch({
+            type: LOAD_MEMOS,
+            memoList: newList
         })
     }
 }

@@ -9,6 +9,7 @@ interface State {
     photos: any[]
 }
 const DEVICE_WIDTH = Dimensions.get("screen").width
+
 export class MemoSeriesDetails extends React.Component<Props, State> {
     constructor(props) {
         super(props)
@@ -30,7 +31,7 @@ export class MemoSeriesDetails extends React.Component<Props, State> {
             <View style={styles.container} >
                 <FlatList data={this.state.photos}
                     renderItem={this._renderItem}
-                    keyExtractor={(item: Memo) => item.id}
+                    keyExtractor={(item: Memo) => Math.random().toString()}
                     ItemSeparatorComponent={() => <View style={{ height: 5 }}></View>}>
                 </FlatList>
             </View>
