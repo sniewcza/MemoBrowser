@@ -18,7 +18,7 @@ interface State {
 }
 
 export class MemoListItem extends React.Component<Props, State>{
-    constructor(props) {
+    constructor(props: Props) {
         super(props)
         this.row = null
         this.state = {

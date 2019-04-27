@@ -1,7 +1,7 @@
 import React from "react"
-import Icon from "react-native-vector-icons/Ionicons"
-import { View, StyleSheet, TouchableOpacity } from "react-native"
+import { View, StyleSheet } from "react-native"
 import { Color } from "../../config/ColorTheme"
+import { IconButton } from "../Buttons/IconButton"
 
 interface ImageSwiperBottomBarProps {
     iconSize: number;
@@ -11,9 +11,11 @@ interface ImageSwiperBottomBarProps {
     addDescriptionPress: () => any;
     donePress: () => any
 }
+
 export class ImageSwiperBottomBar extends React.PureComponent<ImageSwiperBottomBarProps, {}> {
     render() {
-        const { addCameraPhotoPress,
+        const {
+            addCameraPhotoPress,
             addGaleryPhotoPress,
             donePress,
             doneButtonActive,
@@ -21,18 +23,37 @@ export class ImageSwiperBottomBar extends React.PureComponent<ImageSwiperBottomB
             iconSize } = this.props
         return (
             <View style={styles.container}>
-                <TouchableOpacity onPress={addCameraPhotoPress}>
-                    <Icon name={"md-camera"} size={iconSize} color={Color.onPrimary}></Icon>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={addGaleryPhotoPress}>
-                    <Icon name={"md-image"} size={iconSize} color={Color.onPrimary}></Icon>
-                </TouchableOpacity>
-                <TouchableOpacity style={doneButtonActive ? null : styles.inAcvtive} onPress={addDescriptionPress} disabled={!doneButtonActive} >
-                    <Icon name={"md-create"} size={iconSize} color={Color.onPrimary}></Icon>
-                </TouchableOpacity>
-                <TouchableOpacity style={doneButtonActive ? null : styles.inAcvtive} onPress={donePress} disabled={!doneButtonActive}>
-                    <Icon name={"md-checkmark"} size={iconSize} color={Color.onPrimary}></Icon>
-                </TouchableOpacity>
+                <IconButton
+                    onPress={addCameraPhotoPress}
+                    style={styles.active}
+                    iconName={"md-camera"}
+                    iconSize={iconSize}
+                    color={Color.onPrimary}
+                />
+                <IconButton
+                    onPress={addGaleryPhotoPress}
+                    style={styles.active}
+                    iconName={"md-image"}
+                    iconSize={iconSize}
+                    color={Color.onPrimary}
+                />
+                <IconButton
+                    onPress={addDescriptionPress}
+                    style={doneButtonActive ? styles.active : styles.inAcvtive}
+                    disabled={!doneButtonActive}
+                    iconName={"md-create"}
+                    iconSize={iconSize}
+                    color={Color.onPrimary}
+                />
+                <IconButton
+                    onPress={donePress}
+                    style={doneButtonActive ? styles.active : styles.inAcvtive}
+                    disabled={!doneButtonActive}
+                    iconName={"md-checkmark"}
+                    iconSize={iconSize}
+                    color={Color.onPrimary}
+                />
+
             </View >
         )
     }
@@ -50,5 +71,8 @@ const styles = StyleSheet.create({
     },
     inAcvtive: {
         opacity: 0.4
+    },
+    active: {
+        padding: 3
     }
 })

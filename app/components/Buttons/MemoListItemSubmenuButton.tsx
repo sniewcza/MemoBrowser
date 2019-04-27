@@ -1,9 +1,9 @@
 import React from "react"
-import { TouchableWithoutFeedback, View } from "react-native"
+import { TouchableWithoutFeedback, View, StyleProp, ViewStyle } from "react-native"
 
 interface Props {
     onPress: () => any;
-    style: any[]
+    style?: StyleProp<ViewStyle>
 }
 
 export default class MemoListItemSubmenuButton extends React.PureComponent<Props> {
@@ -11,7 +11,7 @@ export default class MemoListItemSubmenuButton extends React.PureComponent<Props
         const { onPress, style } = this.props
         return (
             < TouchableWithoutFeedback onPress={onPress} >
-                <View style={[...style]}>
+                <View style={style}>
                     {this.props.children}
                 </View>
             </ TouchableWithoutFeedback >

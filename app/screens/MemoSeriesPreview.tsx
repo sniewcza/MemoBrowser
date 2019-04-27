@@ -2,13 +2,13 @@ import React from "react";
 import { ImageSwiper } from "../components/ImageSwpier/ImageSwiper"
 import { Modal, View, Text, StyleSheet } from "react-native"
 import { ImageSwiperBottomBar } from "../components/ImageSwpier/ImageSwiperBottomBar"
-import { DeletePhotoHeaderButton } from "../components/Buttons/DeletePhotoHeaderButton"
 import { MemoDescriptionTextInput } from "../components/TextInputs/MemoDescriptionTextInput"
 import ImagePicker from "../api/ImagePicker"
 import { connect } from "react-redux"
 import { addMemo } from "../store/index"
 import { Color } from "../config/ColorTheme"
 import { NavigationScreenProps } from "react-navigation"
+import { IconButton } from "../components/Buttons/IconButton"
 
 interface Props extends NavigationScreenProps {
     addmemo: (name: string, photoList: any[]) => any
@@ -34,10 +34,14 @@ class MemoSeriesPreview extends React.Component<Props, State>{
 
     static navigationOptions = ({ navigation }: NavigationScreenProps) => {
         return {
-            headerRight: <DeletePhotoHeaderButton
-                onPress={navigation.getParam('deleteHandler')}
-                color={Color.onPrimary}>
-            </DeletePhotoHeaderButton>
+            headerRight:
+                <IconButton
+                    onPress={navigation.getParam('deleteHandler')}
+                    style={styles.headerButton}
+                    iconName={"md-trash"}
+                    iconSize={30}
+                    color={Color.onPrimary}
+                />
         };
     };
 
@@ -168,6 +172,10 @@ export const MemoSeriesPreviewScreen = connect(null, mapDispatchToProps)(MemoSer
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    headerButton: {
+        padding: 4,
+        marginRight: 20
     },
     mainContent: {
         flex: 9,
