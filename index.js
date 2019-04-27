@@ -4,7 +4,7 @@
 import { Provider } from "react-redux"
 import React from "react"
 import { AppRegistry } from 'react-native';
-import App from './app/config/router';
+import App from './app/config/Router';
 import { store } from "./app/store/configureStore"
 import { name as appName } from './app.json';
 

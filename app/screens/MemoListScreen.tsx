@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, StatusBar } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
 import { removeMemo, loadMemos, renameMemo } from "../store/index"
 import { deleteMemoAlert } from "../components/Alerts/deleteMemoAlert"
 import { Memo } from "../model/Memo"
+import { Color } from "../config/ColorTheme"
+import { NavigationScreenProps } from "react-navigation"
 
-type Props = {
-    navigation: any;
+interface Props extends NavigationScreenProps {
     memos: Memo[]
     deleteMemo: (name: string) => any
     loadMemos: () => any
@@ -17,6 +18,7 @@ type Props = {
 
 class MemoListView extends Component<Props> {
     componentDidMount() {
+        StatusBar.setBackgroundColor(Color.statusBar, true)
         if (this.props.memos.length === 0) {
             this.props.loadMemos()
         }
@@ -31,8 +33,8 @@ class MemoListView extends Component<Props> {
     }
 
     handleMemoItemPress = (id: string) => {
-        const memoItem = this.props.memos.find(memo => memo.id === id)
-        this.props.navigation.push("MemoSeriesDetails", { photos: memoItem.photos })
+        const memo = this.props.memos.find(memo => memo.id === id)
+        this.props.navigation.push("MemoSeriesDetails", { memo })
     }
 
     handleRenameMemo = (id: string, newName: string) => {
@@ -52,7 +54,7 @@ class MemoListView extends Component<Props> {
                 </MemoList>
                 <View style={styles.actionButton}>
                     <ActionButton
-                        backgroundColor={"red"}
+                        backgroundColor={Color.secondary}
                         onPress={this.handleActionButtonPress}>
                     </ActionButton>
                 </View>

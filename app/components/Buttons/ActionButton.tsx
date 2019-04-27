@@ -1,6 +1,7 @@
 import React from 'react';
 import Icon from "react-native-vector-icons/Ionicons"
 import { TouchableWithoutFeedback, View, StyleSheet } from 'react-native'
+import { Color } from "../../config/ColorTheme"
 
 interface Props {
     onPress?: () => any,
@@ -11,7 +12,7 @@ export class ActionButton extends React.PureComponent<Props> {
         return (
             <TouchableWithoutFeedback onPress={this.props.onPress} >
                 <View style={{ ...styles.actionButton, backgroundColor: this.props.backgroundColor }}>
-                    <Icon name="md-add" size={35} color={"white"} ></Icon>
+                    <Icon name="md-add" size={35} color={Color.onSecondary} ></Icon>
                 </View>
             </TouchableWithoutFeedback>
         )

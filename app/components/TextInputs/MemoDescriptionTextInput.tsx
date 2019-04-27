@@ -19,9 +19,9 @@ export class MemoDescriptionTextInput extends React.Component<Props> {
                     value={text}
                     onBlur={onAccept}
                     placeholder={"Describe your memo series"}
-                    placeholderTextColor={"red"}
+                    placeholderTextColor={"black"}
                     onChangeText={onTextChange}
-                    selectionColor={"red"}
+                    selectionColor={"black"}
                     textAlign={'center'}>
                 </TextInput>
             </View>
@@ -33,12 +33,13 @@ export class MemoDescriptionTextInput extends React.Component<Props> {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "transparent",
+        backgroundColor: "#9FA8DA",
         justifyContent: "center"
     },
     textInput: {
-        color: "red",
-        backgroundColor: "transparent"
+      //  color: "black",
+        fontSize:16,
+        backgroundColor: "#9FA8DA"
     },
     buttonsRow: {
         flexDirection: "row",

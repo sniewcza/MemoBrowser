@@ -12,7 +12,7 @@ export class DeletePhotoHeaderButton extends React.PureComponent<Props>{
         return (
             <TouchableOpacity onPress={this.props.onPress}>
                 <View style={styles.container}>
-                    <Icon name="md-trash" size={35} color={this.props.color || "red"}></Icon>
+                    <Icon name="md-trash" size={30} color={this.props.color || "red"}></Icon>
                 </View>
             </TouchableOpacity>
         )

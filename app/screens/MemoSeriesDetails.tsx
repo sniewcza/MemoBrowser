@@ -1,23 +1,29 @@
 import React from "react"
 import { FlatList, View, Image, StyleSheet, Dimensions } from "react-native"
 import { Memo } from "../model/Memo";
+import { NavigationScreenProps } from "react-navigation";
 
-interface Props {
-    navigation: any
+interface Props extends NavigationScreenProps {
 }
 interface State {
     photos: any[]
 }
+
 const DEVICE_WIDTH = Dimensions.get("screen").width
 
 export class MemoSeriesDetails extends React.Component<Props, State> {
-    constructor(props) {
+    constructor(props: Props) {
         super(props)
         this.state = {
-            photos: this.props.navigation.state.params.photos
+            photos: this.props.navigation.state.params.memo.photos
         }
     }
 
+    static navigationOptions = ({ navigation }: NavigationScreenProps) => {
+        return {
+            title: navigation.state.params.memo.name
+        }
+    }
     _renderItem = ({ item }) => {
         const aspectRatio = item.height / item.width
         return (

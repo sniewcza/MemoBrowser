@@ -925,6 +925,14 @@
     "@types/prop-types" "*"
     "@types/react" "*"
 
+"@types/react-navigation@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@types/react-navigation/-/react-navigation-3.0.6.tgz#97ab418eb6e29919f0f78785c5c360954e886d75"
+  integrity sha512-4JoHIR7qrjwYDmJiuvYEOgme2Nl5ieiDEM5eRMHV3HkRiUmeHRlVfmqTCljcDUwkFJHhK2JZfyhppA/CZY+M8w==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
 "@types/react-redux@^7.0.5":
   version "7.0.5"
   resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-7.0.5.tgz#4d284f8565cd9f7316086cce50e87f3d201d0880"

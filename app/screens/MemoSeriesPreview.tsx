@@ -7,9 +7,10 @@ import { MemoDescriptionTextInput } from "../components/TextInputs/MemoDescripti
 import ImagePicker from "../api/ImagePicker"
 import { connect } from "react-redux"
 import { addMemo } from "../store/index"
+import { Color } from "../config/ColorTheme"
+import { NavigationScreenProps } from "react-navigation"
 
-interface Props {
-    navigation: any
+interface Props extends NavigationScreenProps {
     addmemo: (name: string, photoList: any[]) => any
 }
 
@@ -31,10 +32,11 @@ class MemoSeriesPreview extends React.Component<Props, State>{
         }
     }
 
-    static navigationOptions = ({ navigation }) => {
+    static navigationOptions = ({ navigation }: NavigationScreenProps) => {
         return {
             headerRight: <DeletePhotoHeaderButton
-                onPress={navigation.getParam('deleteHandler')}>
+                onPress={navigation.getParam('deleteHandler')}
+                color={Color.onPrimary}>
             </DeletePhotoHeaderButton>
         };
     };
@@ -64,8 +66,8 @@ class MemoSeriesPreview extends React.Component<Props, State>{
     }
 
     addMemo = () => {
-        const {descriptionText,photos} = this.state
-        this.props.addmemo(descriptionText,photos)
+        const { descriptionText, photos } = this.state
+        this.props.addmemo(descriptionText, photos)
         this.props.navigation.goBack()
     }
 
@@ -119,7 +121,8 @@ class MemoSeriesPreview extends React.Component<Props, State>{
         return (
             <View style={styles.container}>
                 <Modal
-                    transparent
+                    animated
+                    animationType="slide"
                     visible={this.state.modalActive}
                     onRequestClose={() => this.setState({
                         modalActive: false
@@ -144,6 +147,7 @@ class MemoSeriesPreview extends React.Component<Props, State>{
                     }
                 </View>
                 <ImageSwiperBottomBar
+                    iconSize={30}
                     addCameraPhotoPress={this.takeCameraPhoto}
                     addGaleryPhotoPress={this.takeGaleryPhoto}
                     addDescriptionPress={this.addDesctiption}
