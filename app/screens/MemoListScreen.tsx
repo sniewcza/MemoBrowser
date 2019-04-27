@@ -29,7 +29,7 @@ class MemoListView extends Component<Props> {
     }
 
     handleDeleteMemo = (id: string) => {
-        deleteMemoAlert(() => this.props.deleteMemo(id))
+         this.props.deleteMemo(id)
     }
 
     handleMemoItemPress = (id: string) => {
