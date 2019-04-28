@@ -1,6 +1,6 @@
 import React from "react";
-import { MemoListItem } from "./MemoListItem"
-import { FlatList, View, StyleSheet } from "react-native"
+import { MemoSwipeRow } from "./MemoSwipeRow"
+import { FlatList, View, StyleSheet, Text } from "react-native"
 import { Memo } from "../../model/Memo"
 
 interface Props {
@@ -13,14 +13,14 @@ interface Props {
 export class MemoList extends React.Component<Props>{
     _renderItem = ({ item }) => {
         return (
-            < MemoListItem
+            < MemoSwipeRow
                 id={item.id}
                 name={item.name}
+                photosCount={item.photos.length}
                 onPress={this.props.onItemPress}
                 onDelete={this.props.onDelete}
                 onRename={this.props.onRename}
-            >
-            </MemoListItem >
+            />
         )
     }
 
@@ -40,6 +40,11 @@ export class MemoList extends React.Component<Props>{
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
-    }
+        flex: 1,
+        marginHorizontal: 20
+    },
+    separator: {
+        borderColor: '#e5e7ea',
+        borderWidth: StyleSheet.hairlineWidth
+    },
 })
