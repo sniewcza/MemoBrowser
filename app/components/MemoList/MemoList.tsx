@@ -24,6 +24,13 @@ export class MemoList extends React.Component<Props>{
         )
     }
 
+    listEmptyComponent = () => {
+        return (
+            <View style={styles.emptyList}>
+                <Text style={styles.text}>Memo list is empty</Text>
+            </View>
+        )
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -31,6 +38,8 @@ export class MemoList extends React.Component<Props>{
                     data={this.props.memos}
                     renderItem={this._renderItem}
                     keyExtractor={(item: Memo) => item.id}
+                    ListEmptyComponent={this.listEmptyComponent}
+                    contentContainerStyle={{ flexGrow: 1 }}
                 >
                 </FlatList>
             </View>
@@ -43,8 +52,13 @@ const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 20
     },
-    separator: {
-        borderColor: '#e5e7ea',
-        borderWidth: StyleSheet.hairlineWidth
+    emptyList: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
+    text: {
+        fontSize: 16,
+        letterSpacing: 1
+    }
 })
