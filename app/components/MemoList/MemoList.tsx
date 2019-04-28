@@ -11,7 +11,7 @@ interface Props {
 }
 
 export class MemoList extends React.Component<Props>{
-    _renderItem = ({ item }) => {
+    _renderItem = ({ item }: { item: Memo }) => {
         return (
             < MemoSwipeRow
                 id={item.id}
