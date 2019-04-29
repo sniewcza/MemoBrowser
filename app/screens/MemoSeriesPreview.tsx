@@ -1,6 +1,6 @@
 import React from "react";
 import { ImageSwiper } from "../components/ImageSwpier/ImageSwiper"
-import { Modal, View, Text, StyleSheet } from "react-native"
+import { Modal, View, Text, StyleSheet, Keyboard, EmitterSubscription } from "react-native"
 import { ImageSwiperBottomBar } from "../components/ImageSwpier/ImageSwiperBottomBar"
 import { MemoDescriptionTextInput } from "../components/TextInputs/MemoDescriptionTextInput"
 import ImagePicker from "../api/ImagePicker"
@@ -22,8 +22,10 @@ interface State {
 }
 
 class MemoSeriesPreview extends React.Component<Props, State>{
+    private keyboardEventSubscription: EmitterSubscription | null
     constructor(props: Props) {
         super(props)
+        this.keyboardEventSubscription = null
         this.state = {
             photos: [],
             activePhotoIndex: -1,
@@ -47,8 +49,23 @@ class MemoSeriesPreview extends React.Component<Props, State>{
 
     componentDidMount() {
         this.props.navigation.setParams({ deleteHandler: this.deletePhoto });
+        this.keyboardEventSubscription = Keyboard.addListener("keyboardDidHide", this.keyboardDidHide)
     }
 
+    componentWillUnmount() {
+        if (this.keyboardEventSubscription) {
+            this.keyboardEventSubscription.remove()
+        }
+    }
+
+    keyboardDidHide = () => {
+        if (this.state.modalActive) {
+            this.setState({
+                modalActive: false
+            })
+        }
+    }
+    
     takeCameraPhoto = async () => {
         const photo = await ImagePicker.takeCameraPhoto()
         if (photo) {

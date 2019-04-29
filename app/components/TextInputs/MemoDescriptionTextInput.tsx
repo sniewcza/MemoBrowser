@@ -2,6 +2,7 @@ import React from "react"
 import { View, TextInput, StyleSheet } from "react-native"
 
 
+
 interface Props {
     visible: boolean;
     text: string;
@@ -37,8 +38,8 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     textInput: {
-      //  color: "black",
-        fontSize:16,
+        //  color: "black",
+        fontSize: 16,
         backgroundColor: "#9FA8DA"
     },
     buttonsRow: {

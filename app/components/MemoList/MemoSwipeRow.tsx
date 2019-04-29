@@ -1,6 +1,6 @@
 import React from "react";
 import { SwipeRow } from "native-base"
-import { View, StyleSheet, TouchableNativeFeedback, TextInput, Animated, TransformsStyle } from "react-native"
+import { View, StyleSheet, TouchableNativeFeedback, TextInput, Animated, TransformsStyle, Keyboard, EmitterSubscription } from "react-native"
 import SubMenuButton from "../Buttons/MemoListItemSubmenuButton"
 import Icon from "react-native-vector-icons/Ionicons"
 import { deleteMemoAlert } from "../Alerts/deleteMemoAlert"
@@ -21,13 +21,14 @@ interface State {
 }
 
 export class MemoSwipeRow extends React.Component<Props, State>{
-
+    private keyboardEventSubscription: EmitterSubscription | null
     private animated: Animated.Value
     private animatedStyle: TransformsStyle
     private row: SwipeRow | null
     constructor(props: Props) {
         super(props)
         this.row = null
+        this.keyboardEventSubscription = null
         this.animated = new Animated.Value(0)
         this.animatedStyle = {
             transform: [
@@ -45,6 +46,23 @@ export class MemoSwipeRow extends React.Component<Props, State>{
         }
     }
 
+    componentDidMount() {
+        Keyboard.addListener("keyboardDidHide", this.keyboardDidHide)
+    }
+
+    componentWillUnmount() {
+        if (this.keyboardEventSubscription) {
+            this.keyboardEventSubscription.remove()
+        }
+    }
+
+    keyboardDidHide = () => {
+        if (this.state.renameMode) {
+            this.setState({
+                renameMode: false
+            })
+        }
+    }
     deleteMemo = () => {
         this.closeRow()
         deleteMemoAlert(() => {

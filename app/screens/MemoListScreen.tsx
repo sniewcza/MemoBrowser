@@ -4,7 +4,6 @@ import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
 import { removeMemo, loadMemos, renameMemo } from "../store/index"
-import { deleteMemoAlert } from "../components/Alerts/deleteMemoAlert"
 import { Memo } from "../model/Memo"
 import { Color } from "../config/ColorTheme"
 import { NavigationScreenProps } from "react-navigation"
@@ -29,7 +28,7 @@ class MemoListView extends Component<Props> {
     }
 
     handleDeleteMemo = (id: string) => {
-         this.props.deleteMemo(id)
+        this.props.deleteMemo(id)
     }
 
     handleMemoItemPress = (id: string) => {
