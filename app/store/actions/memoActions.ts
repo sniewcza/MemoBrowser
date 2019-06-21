@@ -1,17 +1,19 @@
 import { ADD_MEMO, DELETE_MEMO, LOAD_MEMOS } from "./actionTypes"
 import { Memo } from "../../model/Memo"
 import { memoStorage } from "../../api/MemoStorage"
+import moment from "moment"
 
 export const addMemo = (description: string, photoList: any[]) => {
     return async dispatch => {
         let name = description.trim()
         if (name.length === 0) {
-            name = Date.now().toString()
+            name = ""
         }
         const newMemo: Memo = {
             name,
             id: Math.random().toString(),
-            photos: photoList
+            photos: photoList,
+            creationDate: moment().format("DD-MM-YYYY")
         }
         await memoStorage.createMemoSnapshoot(newMemo)
         dispatch({

@@ -14,9 +14,7 @@ export class MemoList extends React.Component<Props>{
     _renderItem = ({ item }: { item: Memo }) => {
         return (
             < MemoSwipeRow
-                id={item.id}
-                name={item.name}
-                photosCount={item.photos.length}
+                memo={item}
                 onPress={this.props.onItemPress}
                 onDelete={this.props.onDelete}
                 onRename={this.props.onRename}

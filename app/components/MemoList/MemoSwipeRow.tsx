@@ -5,11 +5,10 @@ import SubMenuButton from "../Buttons/MemoListItemSubmenuButton"
 import Icon from "react-native-vector-icons/Ionicons"
 import { deleteMemoAlert } from "../Alerts/deleteMemoAlert"
 import { MemoListItem } from "./MemoListItem"
+import { Memo } from "../../model/Memo";
 
 interface Props {
-    id: string
-    name: string
-    photosCount: number
+    memo: Memo
     onDelete: (id: string) => any;
     onPress: (id: string) => any
     onRename: (id: string, newName: string) => any
@@ -42,7 +41,7 @@ export class MemoSwipeRow extends React.Component<Props, State>{
         }
         this.state = {
             renameMode: false,
-            memoName: this.props.name
+            memoName: this.props.memo.name
         }
     }
 
@@ -70,14 +69,14 @@ export class MemoSwipeRow extends React.Component<Props, State>{
                 toValue: 1,
                 duration: 400,
                 useNativeDriver: true
-            }).start(() => this.props.onDelete(this.props.id))
+            }).start(() => this.props.onDelete(this.props.memo.id))
 
         })
     }
 
     onPress = () => {
         this.closeRow()
-        this.props.onPress(this.props.id)
+        this.props.onPress(this.props.memo.id)
     }
 
     closeRow = () => {
@@ -93,7 +92,7 @@ export class MemoSwipeRow extends React.Component<Props, State>{
     }
 
     closeTextInput = () => {
-        this.props.onRename(this.props.id, this.state.memoName)
+        this.props.onRename(this.props.memo.id, this.state.memoName)
         this.setState({
             renameMode: false
         })
@@ -120,8 +119,9 @@ export class MemoSwipeRow extends React.Component<Props, State>{
                             onLongPress={() => this.row._root.openRightRow()}>
                             <MemoListItem
                                 style={styles.listItem}
-                                name={this.props.name}
-                                photosCount={this.props.photosCount}>
+                                name={this.props.memo.name}
+                                creationDate={this.props.memo.creationDate}
+                                photosCount={this.props.memo.photos.length}>
                             </MemoListItem>
                         </TouchableNativeFeedback>
                         :

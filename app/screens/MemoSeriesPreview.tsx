@@ -65,7 +65,7 @@ class MemoSeriesPreview extends React.Component<Props, State>{
             })
         }
     }
-    
+
     takeCameraPhoto = async () => {
         const photo = await ImagePicker.takeCameraPhoto()
         if (photo) {
@@ -141,21 +141,6 @@ class MemoSeriesPreview extends React.Component<Props, State>{
     render() {
         return (
             <View style={styles.container}>
-                <Modal
-                    animated
-                    animationType="slide"
-                    visible={this.state.modalActive}
-                    onRequestClose={() => this.setState({
-                        modalActive: false
-                    })}>
-                    <MemoDescriptionTextInput
-                        visible={this.state.modalActive}
-                        text={this.state.descriptionText}
-                        onTextChange={this.onDescriptionTextChange}
-                        onAccept={this.onDescriptionAccept}
-                    >
-                    </MemoDescriptionTextInput>
-                </Modal>
                 <View style={styles.mainContent}>
                     {this.state.photos.length === 0 ?
                         this.noPhotoContent() :
@@ -173,7 +158,23 @@ class MemoSeriesPreview extends React.Component<Props, State>{
                     addGaleryPhotoPress={this.takeGaleryPhoto}
                     addDescriptionPress={this.addDesctiption}
                     donePress={this.addMemo}
-                    doneButtonActive={this.state.photos.length === 0 ? false : true} />
+                    doneButtonActive={this.state.photos.length === 0 ? false : true}
+                />
+                <Modal
+                    animated
+                    animationType="slide"
+                    visible={this.state.modalActive}
+                    onRequestClose={() => this.setState({
+                        modalActive: false
+                    })}>
+                    <MemoDescriptionTextInput
+                        visible={this.state.modalActive}
+                        text={this.state.descriptionText}
+                        onTextChange={this.onDescriptionTextChange}
+                        onAccept={this.onDescriptionAccept}
+                    >
+                    </MemoDescriptionTextInput>
+                </Modal>
 
             </View>
         )
