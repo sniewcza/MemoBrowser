@@ -8,6 +8,7 @@ type Orientation = "portrait" | "landscape";
 interface Props extends NavigationScreenProps {
 
 }
+
 interface State {
     photos: Photo[]
     orientation: Orientation
@@ -23,17 +24,17 @@ export class MemoSeriesDetails extends React.Component<Props, State> {
         Dimensions.addEventListener('change', this.orientationChangeHandler
         );
     }
-
-    componentWillUnmount() {
-        Dimensions.removeEventListener("change", this.orientationChangeHandler)
-    }
-
-
+    
     static navigationOptions = ({ navigation }: NavigationScreenProps) => {
         return {
             title: navigation.state.params.memo.name
         }
     }
+
+    componentWillUnmount() {
+        Dimensions.removeEventListener("change", this.orientationChangeHandler)
+    }
+
 
     orientationChangeHandler = () => {
         this.setState({
@@ -71,10 +72,5 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingVertical: 5
-    },
-    image: {
-        width: Dimensions.get("screen").width,
-        height: Dimensions.get("screen").width * 1.33,
-        backgroundColor: "blue"
     }
 })

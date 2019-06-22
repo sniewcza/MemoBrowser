@@ -3,12 +3,12 @@ import { Memo, Photo } from "../../model/Iterfaces"
 import { memoStorage } from "../../api/MemoStorage"
 import moment from "moment"
 
-
 const sortByDateDescending = (memoList: Memo[]) => {
     return memoList.sort((a, b) => {
         return a.creationDate - b.creationDate
     })
 }
+
 export const addMemo = (name: string, photoList: Photo[]) => {
     return async dispatch => {
         let memoName = name.trim()
@@ -59,6 +59,7 @@ export const removeMemos = (ids: string[]) => {
         })
     }
 }
+
 export const renameMemo = (id: string, newName: string) => {
     return async (dispatch, getState) => {
         const renamedMemo: Memo = await memoStorage.renameMemo(id, newName)

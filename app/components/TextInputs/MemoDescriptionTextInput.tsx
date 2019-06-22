@@ -1,14 +1,13 @@
 import React from "react"
 import { View, TextInput, StyleSheet } from "react-native"
 
-
-
 interface Props {
     visible: boolean;
     text: string;
     onTextChange: (text: string) => any;
     onAccept: () => any;
 }
+
 export class MemoDescriptionTextInput extends React.Component<Props> {
     render() {
         const { text, onAccept, onTextChange } = this.props
@@ -23,10 +22,9 @@ export class MemoDescriptionTextInput extends React.Component<Props> {
                     placeholderTextColor={"black"}
                     onChangeText={onTextChange}
                     selectionColor={"black"}
-                    textAlign={'center'}>
-                </TextInput>
+                    textAlign={'center'}
+                />
             </View>
-
         )
     }
 }
@@ -38,7 +36,6 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     textInput: {
-        //  color: "black",
         fontSize: 16,
         backgroundColor: "#9FA8DA"
     },

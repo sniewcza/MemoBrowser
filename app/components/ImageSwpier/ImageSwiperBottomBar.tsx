@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native"
 import { Color } from "../../config/ColorTheme"
 import { IconButton } from "../Buttons/IconButton"
 
-interface ImageSwiperBottomBarProps {
+interface Props {
     iconSize: number;
     doneButtonActive: boolean;
     addCameraPhotoPress: () => any;
@@ -12,7 +12,7 @@ interface ImageSwiperBottomBarProps {
     donePress: () => any
 }
 
-export class ImageSwiperBottomBar extends React.PureComponent<ImageSwiperBottomBarProps, {}> {
+export class ImageSwiperBottomBar extends React.PureComponent<Props> {
     render() {
         const {
             addCameraPhotoPress,
@@ -53,7 +53,6 @@ export class ImageSwiperBottomBar extends React.PureComponent<ImageSwiperBottomB
                     iconSize={iconSize}
                     color={Color.onPrimary}
                 />
-
             </View >
         )
     }

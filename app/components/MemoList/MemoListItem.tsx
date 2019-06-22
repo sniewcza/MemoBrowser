@@ -6,7 +6,7 @@ import moment from "moment"
 
 interface Props {
     name: string;
-    creationDate: string;
+    creationDate: number;
     photosCount: number;
     style: ViewStyle
     deletionMode: boolean
@@ -16,7 +16,7 @@ interface Props {
 export class MemoListItem extends React.PureComponent<Props> {
     render() {
         return (
-            < View style={this.props.style} {...this.props} >
+            < View style={this.props.style} {...this.props}>
                 {this.props.deletionMode && <CheckBox checked={this.props.checked}></CheckBox>}
                 <View style={{ maxWidth: "50%" }}>
                     <Text style={styles.text} numberOfLines={1}>{this.props.name}</Text>
@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
         marginLeft: 5
     },
     date: {
+        color: "black",
         overflow: "hidden"
     },
     metadata: {

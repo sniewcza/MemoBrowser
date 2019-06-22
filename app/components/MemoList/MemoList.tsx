@@ -41,6 +41,7 @@ export class MemoList extends React.Component<Props>{
             </View>
         )
     }
+
     render() {
         return (
             <View style={styles.container}>
@@ -60,7 +61,7 @@ export class MemoList extends React.Component<Props>{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginHorizontal: 20
+        marginHorizontal: 5
     },
     emptyList: {
         flex: 1,

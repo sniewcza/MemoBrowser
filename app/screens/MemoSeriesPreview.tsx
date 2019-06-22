@@ -103,7 +103,6 @@ class MemoSeriesPreview extends React.Component<Props, State>{
                         activePhotoIndex - 1 : activePhotoIndex
                 }
             })
-
         }
     }
 
@@ -140,17 +139,17 @@ class MemoSeriesPreview extends React.Component<Props, State>{
     }
 
     render() {
+        const { photos, activePhotoIndex, modalActive, descriptionText } = this.state
         return (
             <View style={styles.container}>
                 <View style={styles.mainContent}>
-                    {this.state.photos.length === 0 ?
+                    {photos.length === 0 ?
                         this.noPhotoContent() :
                         <ImageSwiper
-                            images={this.state.photos}
-                            activePhotoIndex={this.state.activePhotoIndex}
+                            images={photos}
+                            activePhotoIndex={activePhotoIndex}
                             onIndexChange={this.handleSwipe}
-                        >
-                        </ImageSwiper>
+                        />
                     }
                 </View>
                 <ImageSwiperBottomBar
@@ -159,24 +158,22 @@ class MemoSeriesPreview extends React.Component<Props, State>{
                     addGaleryPhotoPress={this.takeGaleryPhoto}
                     addDescriptionPress={this.addDesctiption}
                     donePress={this.addMemo}
-                    doneButtonActive={this.state.photos.length === 0 ? false : true}
+                    doneButtonActive={photos.length === 0 ? false : true}
                 />
                 <Modal
                     animated
                     animationType="slide"
-                    visible={this.state.modalActive}
+                    visible={modalActive}
                     onRequestClose={() => this.setState({
                         modalActive: false
                     })}>
                     <MemoDescriptionTextInput
-                        visible={this.state.modalActive}
-                        text={this.state.descriptionText}
+                        visible={modalActive}
+                        text={descriptionText}
                         onTextChange={this.onDescriptionTextChange}
                         onAccept={this.onDescriptionAccept}
-                    >
-                    </MemoDescriptionTextInput>
+                    />
                 </Modal>
-
             </View>
         )
     }

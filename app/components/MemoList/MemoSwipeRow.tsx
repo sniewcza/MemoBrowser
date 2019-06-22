@@ -6,6 +6,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 import { deleteMemoAlert } from "../Alerts/deleteMemoAlert"
 import { MemoListItem } from "./MemoListItem"
 import { Memo } from "../../model/Iterfaces";
+import { Color } from "../../config/ColorTheme";
 
 interface Props {
     memo: Memo
@@ -61,7 +62,8 @@ export class MemoSwipeRow extends React.Component<Props, State>{
     }
 
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
-        if (this.props.deletionMode === true && prevProps.deletionMode === false && prevState.checked === true) {
+        if (this.props.deletionMode === true && prevProps.deletionMode === false) {
+            this.closeRow()
             this.setState({
                 checked: false
             })
@@ -75,7 +77,7 @@ export class MemoSwipeRow extends React.Component<Props, State>{
             })
         }
     }
-    
+
     deleteMemo = () => {
         this.closeRow()
         deleteMemoAlert(() => {
@@ -127,6 +129,8 @@ export class MemoSwipeRow extends React.Component<Props, State>{
     }
 
     render() {
+        const { deletionMode, onLongPress, memo } = this.props
+        const { renameMode, checked, memoName } = this.state
         return (
             <Animated.View style={this.animatedStyle}>
                 <SwipeRow
@@ -134,39 +138,39 @@ export class MemoSwipeRow extends React.Component<Props, State>{
                     rightOpenValue={-100}
                     stopRightSwipe={-100}
                     disableRightSwipe
-                    disableLeftSwipe={this.props.deletionMode}
+                    disableLeftSwipe={deletionMode}
                     ref={ref => this.row = ref}
-                    body={!this.state.renameMode ?
+                    body={!renameMode ?
                         <TouchableNativeFeedback
                             onPress={this.onPress}
-                            onLongPress={this.props.onLongPress}>
+                            onLongPress={onLongPress}>
                             <MemoListItem
                                 style={styles.listItem}
-                                name={this.props.memo.name}
-                                creationDate={this.props.memo.creationDate}
-                                photosCount={this.props.memo.photos.length}
-                                deletionMode={this.props.deletionMode}
-                                checked={this.state.checked}>
-                            </MemoListItem>
+                                name={memo.name}
+                                creationDate={memo.creationDate}
+                                photosCount={memo.photos.length}
+                                deletionMode={deletionMode}
+                                checked={checked}
+                            />
                         </TouchableNativeFeedback>
                         :
                         <View style={styles.listItem}>
                             <TextInput
                                 autoFocus
-                                placeholder={this.state.memoName}
-                                value={this.state.memoName}
+                                placeholder={memoName}
+                                value={memoName}
                                 onChangeText={this.handleTextChange}
-                                onBlur={this.closeTextInput}>
-                            </TextInput>
+                                onBlur={this.closeTextInput}
+                            />
                         </View>
                     }
                     right={
                         <View style={styles.subMenu}>
                             <SubMenuButton onPress={this.renameMemo} style={styles.renameButton}>
-                                <Icon name="md-create" size={30} color="white"></Icon>
+                                <Icon name="md-create" size={30} color={Color.onPrimary}></Icon>
                             </SubMenuButton>
                             <SubMenuButton onPress={this.deleteMemo} style={styles.deleteButton}>
-                                <Icon name="md-trash" size={30} color="white"></Icon>
+                                <Icon name="md-trash" size={30} color={Color.onPrimary}></Icon>
                             </SubMenuButton>
                         </View>
                     }
@@ -202,10 +206,10 @@ const styles = StyleSheet.create({
     },
     deleteButton: {
         flex: 1,
-        backgroundColor: 'red',
+        backgroundColor: Color.primary,
     },
     renameButton: {
         flex: 1,
-        backgroundColor: 'green',
+        backgroundColor: Color.primary,
     }
 })

@@ -13,10 +13,10 @@ const CustomlayoutAnimationConfig: LayoutAnimationConfig = {
     duration: 500,
     update: {
         type: LayoutAnimation.Types.easeInEaseOut,
-        springDamping: 0.4,
         property: LayoutAnimation.Properties.opacity
     },
 }
+
 interface Props extends NavigationScreenProps {
     memos: Memo[]
     deleteMemo: (id: string) => any
@@ -30,7 +30,8 @@ interface State {
     memosToDelete: string[]
 }
 
-UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+UIManager.setLayoutAnimationEnabledExperimental &&
+    UIManager.setLayoutAnimationEnabledExperimental(true);
 
 class MemoListView extends Component<Props, State> {
     actionButtonAnimatedValue: Animated.Value;
@@ -44,6 +45,7 @@ class MemoListView extends Component<Props, State> {
             memosToDelete: []
         }
     }
+
     componentDidMount() {
         StatusBar.setBackgroundColor(Color.statusBar, true)
         if (this.props.memos.length === 0) {
@@ -142,6 +144,7 @@ class MemoListView extends Component<Props, State> {
                 duration: 300
             })])
     }
+
     render() {
         return (
             <View style={styles.container}>

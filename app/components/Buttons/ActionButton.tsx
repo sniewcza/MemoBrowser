@@ -9,10 +9,11 @@ interface Props {
 }
 export class ActionButton extends React.PureComponent<Props> {
     render() {
+        const { onPress, backgroundColor } = this.props
         return (
-            <TouchableWithoutFeedback onPress={this.props.onPress} >
-                <View style={{ ...styles.actionButton, backgroundColor: this.props.backgroundColor }}>
-                    <Icon name="md-add" size={35} color={Color.onSecondary} ></Icon>
+            <TouchableWithoutFeedback onPress={onPress} >
+                <View style={{ ...styles.actionButton, backgroundColor: backgroundColor }}>
+                    <Icon name="md-add" size={35} color={Color.onSecondary} />
                 </View>
             </TouchableWithoutFeedback>
         )

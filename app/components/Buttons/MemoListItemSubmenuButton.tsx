@@ -22,6 +22,7 @@ export default class MemoListItemSubmenuButton extends React.PureComponent<Props
 const styles = StyleSheet.create({
     button: {
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        borderWidth:StyleSheet.hairlineWidth
     }
 })

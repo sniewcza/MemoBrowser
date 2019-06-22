@@ -4,6 +4,7 @@ import { Memo } from "../../model/Iterfaces"
 const defaultState = {
     memos: Array<Memo>()
 }
+
 export const memoReducer = (state = defaultState, action: any) => {
     switch (action.type) {
         case ADD_MEMO:
