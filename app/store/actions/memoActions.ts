@@ -1,5 +1,5 @@
 import { ADD_MEMO, DELETE_MEMO, LOAD_MEMOS, DELETE_MEMOS } from "./actionTypes"
-import { Memo } from "../../model/Memo"
+import { Memo, Photo } from "../../model/Iterfaces"
 import { memoStorage } from "../../api/MemoStorage"
 import moment from "moment"
 
@@ -9,14 +9,14 @@ const sortByDateDescending = (memoList: Memo[]) => {
         return a.creationDate - b.creationDate
     })
 }
-export const addMemo = (description: string, photoList: any[]) => {
+export const addMemo = (name: string, photoList: Photo[]) => {
     return async dispatch => {
-        let name = description.trim()
-        if (name.length === 0) {
-            name = ""
+        let memoName = name.trim()
+        if (memoName.length === 0) {
+            memoName = ""
         }
         const newMemo: Memo = {
-            name,
+            name: memoName,
             id: Math.random().toString(),
             photos: photoList,
             creationDate: moment().valueOf()

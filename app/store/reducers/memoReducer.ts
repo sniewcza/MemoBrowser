@@ -1,5 +1,5 @@
 import { ADD_MEMO, DELETE_MEMO, LOAD_MEMOS, DELETE_MEMOS } from "../actions/actionTypes"
-import { Memo } from "../../model/Memo"
+import { Memo } from "../../model/Iterfaces"
 
 const defaultState = {
     memos: Array<Memo>()

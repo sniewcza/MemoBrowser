@@ -1,5 +1,5 @@
 import { AsyncStorage } from "react-native"
-import { Memo } from "../model/Memo"
+import { Memo } from "../model/Iterfaces"
 
 const STORE_NAME = '@MemoStore'
 

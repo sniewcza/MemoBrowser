@@ -4,12 +4,12 @@ import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
 import { removeMemo, loadMemos, renameMemo, removeMemos } from "../store/index"
-import { Memo } from "../model/Memo"
+import { Memo } from "../model/Iterfaces"
 import { Color } from "../config/ColorTheme"
 import { NavigationScreenProps } from "react-navigation"
 import { DeletionBottomBar } from "../components/MenuBars/DeletionBottomBar"
 
-const CustomlayoutAnimationConfig = {
+const CustomlayoutAnimationConfig: LayoutAnimationConfig = {
     duration: 500,
     update: {
         type: LayoutAnimation.Types.easeInEaseOut,
@@ -29,6 +29,7 @@ interface State {
     deletionMode: boolean
     memosToDelete: string[]
 }
+
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 class MemoListView extends Component<Props, State> {

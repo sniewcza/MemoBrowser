@@ -9,13 +9,14 @@ import { addMemo } from "../store/index"
 import { Color } from "../config/ColorTheme"
 import { NavigationScreenProps } from "react-navigation"
 import { IconButton } from "../components/Buttons/IconButton"
+import { Photo } from "../model/Iterfaces";
 
 interface Props extends NavigationScreenProps {
-    addmemo: (name: string, photoList: any[]) => any
+    addmemo: (name: string, photoList: Photo[]) => any
 }
 
 interface State {
-    photos: any[],
+    photos: Photo[],
     activePhotoIndex: number;
     descriptionText: string
     modalActive: boolean
@@ -182,7 +183,7 @@ class MemoSeriesPreview extends React.Component<Props, State>{
 }
 
 const mapDispatchToProps = dispatch => ({
-    addmemo: (name: string, photoList: any[]) => dispatch(addMemo(name, photoList))
+    addmemo: (name: string, photoList: Photo[]) => dispatch(addMemo(name, photoList))
 })
 
 export const MemoSeriesPreviewScreen = connect(null, mapDispatchToProps)(MemoSeriesPreview)

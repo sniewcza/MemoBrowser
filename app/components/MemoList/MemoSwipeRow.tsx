@@ -5,7 +5,7 @@ import SubMenuButton from "../Buttons/MemoListItemSubmenuButton"
 import Icon from "react-native-vector-icons/Ionicons"
 import { deleteMemoAlert } from "../Alerts/deleteMemoAlert"
 import { MemoListItem } from "./MemoListItem"
-import { Memo } from "../../model/Memo";
+import { Memo } from "../../model/Iterfaces";
 
 interface Props {
     memo: Memo
