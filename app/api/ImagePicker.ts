@@ -56,7 +56,6 @@ class ImagePickerService {
         noData: true, mediaType: 'photo', storageOptions: {
             path: "MemoBrowser",
         }
-
     }
 
     public takeCameraPhoto(): Promise<Photo | null> {
@@ -64,7 +63,7 @@ class ImagePickerService {
             ImagePicker.launchCamera(this.options, (response: Response) => {
                 if (!response.didCancel && !response.error) {
                     const photo: Photo = {
-                        uri: response.uri,
+                        uri: `file:///${response.path}`,
                         width: response.width,
                         height: response.height
                     }
@@ -81,7 +80,7 @@ class ImagePickerService {
             ImagePicker.launchImageLibrary(this.options, response => {
                 if (!response.didCancel && !response.error) {
                     const photo: Photo = {
-                        uri: response.uri,
+                        uri: `file:///${response.path}`,
                         width: response.width,
                         height: response.height
                     }
