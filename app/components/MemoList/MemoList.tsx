@@ -5,19 +5,31 @@ import { Memo } from "../../model/Memo"
 
 interface Props {
     memos: Memo[]
-    onDelete: (id: string) => any
+    deletionMode: boolean
+    onItemDelete: (id: string) => any
     onItemPress: (id: string) => any
-    onRename: (id: string, newName: string) => any
+    onItemLongPress: () => any
+    onItemRename: (id: string, newName: string) => any
+    onItemCheckChange: (id: string) => any
 }
 
 export class MemoList extends React.Component<Props>{
     _renderItem = ({ item }: { item: Memo }) => {
+        const { deletionMode,
+            onItemPress,
+            onItemLongPress,
+            onItemDelete,
+            onItemCheckChange,
+            onItemRename } = this.props
         return (
             < MemoSwipeRow
                 memo={item}
-                onPress={this.props.onItemPress}
-                onDelete={this.props.onDelete}
-                onRename={this.props.onRename}
+                deletionMode={deletionMode}
+                onPress={onItemPress}
+                onLongPress={onItemLongPress}
+                onDelete={onItemDelete}
+                onRename={onItemRename}
+                onCheck={onItemCheckChange}
             />
         )
     }

@@ -1,25 +1,67 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, StatusBar } from 'react-native';
+import { StyleSheet, View, StatusBar, Animated, Dimensions, UIManager, LayoutAnimation, LayoutAnimationConfig } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
-import { removeMemo, loadMemos, renameMemo } from "../store/index"
+import { removeMemo, loadMemos, renameMemo, removeMemos } from "../store/index"
 import { Memo } from "../model/Memo"
 import { Color } from "../config/ColorTheme"
 import { NavigationScreenProps } from "react-navigation"
+import { DeletionBottomBar } from "../components/MenuBars/DeletionBottomBar"
 
+const CustomlayoutAnimationConfig = {
+    duration: 500,
+    update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        springDamping: 0.4,
+        property: LayoutAnimation.Properties.opacity
+    },
+}
 interface Props extends NavigationScreenProps {
     memos: Memo[]
-    deleteMemo: (name: string) => any
+    deleteMemo: (id: string) => any
+    deleteMemos: (ids: string[]) => any
     loadMemos: () => any
     renameMemo: (id: string, newName: string) => any
 };
 
-class MemoListView extends Component<Props> {
+interface State {
+    deletionMode: boolean
+    memosToDelete: string[]
+}
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+
+class MemoListView extends Component<Props, State> {
+    actionButtonAnimatedValue: Animated.Value;
+    deletionMenuBarAnimatedValue: Animated.Value;
+    constructor(props: Props) {
+        super(props)
+        this.actionButtonAnimatedValue = new Animated.Value(0)
+        this.deletionMenuBarAnimatedValue = new Animated.Value(Dimensions.get("window").height)
+        this.state = {
+            deletionMode: false,
+            memosToDelete: []
+        }
+    }
     componentDidMount() {
         StatusBar.setBackgroundColor(Color.statusBar, true)
         if (this.props.memos.length === 0) {
             this.props.loadMemos()
+        }
+    }
+
+    componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
+        if (prevState.deletionMode === false && this.state.deletionMode === true) {
+            this.enterDeletionModeAnimation().start()
+        }
+        if (prevState.deletionMode === true && this.state.deletionMode === false) {
+            this.closeDeletionModeAnimation().start()
+            this.setState({
+                memosToDelete: []
+            })
+        }
+        if (prevProps.memos !== this.props.memos) {
+            LayoutAnimation.configureNext(CustomlayoutAnimationConfig)
         }
     }
 
@@ -40,23 +82,86 @@ class MemoListView extends Component<Props> {
         this.props.renameMemo(id, newName)
     }
 
+    handleMemoItemLongPress = () => {
+        this.setState({
+            deletionMode: true
+        })
+    }
+
+    handleMemoItemCheckChange = (id: string) => {
+        const memosToDelete = this.state.memosToDelete.slice()
+        const index = memosToDelete.findIndex(item => item === id)
+        if (index !== -1) {
+            this.setState({
+                memosToDelete: [...memosToDelete.slice(0, index), ...memosToDelete.slice(index + 1)]
+            })
+        }
+        else {
+            this.setState({
+                memosToDelete: [...memosToDelete, id]
+            })
+        }
+
+    }
+
+    cancelDeletionMode = () => {
+        this.setState({
+            deletionMode: false
+        })
+    }
+
+    deleteMemos = () => {
+        const { memosToDelete } = this.state
+        if (memosToDelete.length !== 0) {
+            this.cancelDeletionMode()
+            this.props.deleteMemos(memosToDelete)
+        }
+    }
+
+    enterDeletionModeAnimation = () => {
+        return Animated.parallel([
+            Animated.timing(this.actionButtonAnimatedValue, {
+                toValue: Dimensions.get("window").width + 50,
+                duration: 500
+            }),
+            Animated.timing(this.deletionMenuBarAnimatedValue, {
+                toValue: 0,
+                duration: 300
+            })])
+    }
+
+    closeDeletionModeAnimation = () => {
+        return Animated.parallel([
+            Animated.timing(this.actionButtonAnimatedValue, {
+                toValue: 0,
+                duration: 300
+            }),
+            Animated.timing(this.deletionMenuBarAnimatedValue, {
+                toValue: Dimensions.get("window").height,
+                duration: 300
+            })])
+    }
     render() {
         return (
             <View style={styles.container}>
                 <MemoList
                     memos={this.props.memos}
                     onItemPress={this.handleMemoItemPress}
-                    onDelete={this.handleDeleteMemo}
-                    onRename={this.handleRenameMemo}
-                >
-
-                </MemoList>
-                <View style={styles.actionButton}>
+                    onItemLongPress={this.handleMemoItemLongPress}
+                    onItemDelete={this.handleDeleteMemo}
+                    onItemRename={this.handleRenameMemo}
+                    onItemCheckChange={this.handleMemoItemCheckChange}
+                    deletionMode={this.state.deletionMode}
+                />
+                <Animated.View style={[styles.actionButton, { transform: [{ translateX: this.actionButtonAnimatedValue }] }]}>
                     <ActionButton
                         backgroundColor={Color.secondary}
-                        onPress={this.handleActionButtonPress}>
-                    </ActionButton>
-                </View>
+                        onPress={this.handleActionButtonPress}
+                    />
+                </Animated.View>
+                <Animated.View style={[styles.menuBar, { transform: [{ translateY: this.deletionMenuBarAnimatedValue }] }]}>
+                    <DeletionBottomBar onCancelPress={this.cancelDeletionMode} onDeletePress={this.deleteMemos} />
+                </Animated.View>
             </View>
         );
     }
@@ -70,9 +175,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        deleteMemo: (name: string) => dispatch(removeMemo(name)),
+        deleteMemo: (id: string) => dispatch(removeMemo(id)),
         loadMemos: () => dispatch(loadMemos()),
-        renameMemo: (id: string, newName: string) => dispatch(renameMemo(id, newName))
+        renameMemo: (id: string, newName: string) => dispatch(renameMemo(id, newName)),
+        deleteMemos: (ids: string[]) => dispatch(removeMemos(ids))
     }
 }
 
@@ -83,11 +189,15 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: "white" //'#F5FCFF',
+        backgroundColor: "white"
     },
     actionButton: {
         position: 'absolute',
         right: 20,
         bottom: 20,
+    },
+    menuBar: {
+        position: 'absolute',
+        bottom: 0,
     }
 });

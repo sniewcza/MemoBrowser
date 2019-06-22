@@ -9,13 +9,17 @@ import { Memo } from "../../model/Memo";
 
 interface Props {
     memo: Memo
+    deletionMode: boolean
     onDelete: (id: string) => any;
     onPress: (id: string) => any
+    onLongPress: () => any
     onRename: (id: string, newName: string) => any
+    onCheck: (id: string) => any
 }
 
 interface State {
     renameMode: boolean
+    checked: boolean
     memoName: string
 }
 
@@ -41,7 +45,8 @@ export class MemoSwipeRow extends React.Component<Props, State>{
         }
         this.state = {
             renameMode: false,
-            memoName: this.props.memo.name
+            memoName: this.props.memo.name,
+            checked: false
         }
     }
 
@@ -55,6 +60,14 @@ export class MemoSwipeRow extends React.Component<Props, State>{
         }
     }
 
+    componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
+        if (this.props.deletionMode === true && prevProps.deletionMode === false && prevState.checked === true) {
+            this.setState({
+                checked: false
+            })
+        }
+    }
+
     keyboardDidHide = () => {
         if (this.state.renameMode) {
             this.setState({
@@ -62,6 +75,7 @@ export class MemoSwipeRow extends React.Component<Props, State>{
             })
         }
     }
+    
     deleteMemo = () => {
         this.closeRow()
         deleteMemoAlert(() => {
@@ -75,8 +89,16 @@ export class MemoSwipeRow extends React.Component<Props, State>{
     }
 
     onPress = () => {
-        this.closeRow()
-        this.props.onPress(this.props.memo.id)
+        if (this.props.deletionMode) {
+            this.setState({
+                checked: !this.state.checked
+            })
+            this.props.onCheck(this.props.memo.id)
+        }
+        else {
+            this.closeRow()
+            this.props.onPress(this.props.memo.id)
+        }
     }
 
     closeRow = () => {
@@ -112,16 +134,19 @@ export class MemoSwipeRow extends React.Component<Props, State>{
                     rightOpenValue={-100}
                     stopRightSwipe={-100}
                     disableRightSwipe
+                    disableLeftSwipe={this.props.deletionMode}
                     ref={ref => this.row = ref}
                     body={!this.state.renameMode ?
                         <TouchableNativeFeedback
                             onPress={this.onPress}
-                            onLongPress={() => this.row._root.openRightRow()}>
+                            onLongPress={this.props.onLongPress}>
                             <MemoListItem
                                 style={styles.listItem}
                                 name={this.props.memo.name}
                                 creationDate={this.props.memo.creationDate}
-                                photosCount={this.props.memo.photos.length}>
+                                photosCount={this.props.memo.photos.length}
+                                deletionMode={this.props.deletionMode}
+                                checked={this.state.checked}>
                             </MemoListItem>
                         </TouchableNativeFeedback>
                         :

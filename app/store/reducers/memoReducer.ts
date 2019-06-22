@@ -1,4 +1,4 @@
-import { ADD_MEMO, DELETE_MEMO, LOAD_MEMOS } from "../actions/actionTypes"
+import { ADD_MEMO, DELETE_MEMO, LOAD_MEMOS, DELETE_MEMOS } from "../actions/actionTypes"
 import { Memo } from "../../model/Memo"
 
 const defaultState = {
@@ -14,6 +14,10 @@ export const memoReducer = (state = defaultState, action: any) => {
             const memos = state.memos.filter(memo => memo.id !== action.id)
             return {
                 memos
+            }
+        case DELETE_MEMOS:
+            return {
+                memos: action.memoList
             }
         case LOAD_MEMOS:
             return {

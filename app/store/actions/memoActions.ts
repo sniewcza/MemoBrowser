@@ -1,8 +1,14 @@
-import { ADD_MEMO, DELETE_MEMO, LOAD_MEMOS } from "./actionTypes"
+import { ADD_MEMO, DELETE_MEMO, LOAD_MEMOS, DELETE_MEMOS } from "./actionTypes"
 import { Memo } from "../../model/Memo"
 import { memoStorage } from "../../api/MemoStorage"
 import moment from "moment"
 
+
+const sortByDateDescending = (memoList: Memo[]) => {
+    return memoList.sort((a, b) => {
+        return a.creationDate - b.creationDate
+    })
+}
 export const addMemo = (description: string, photoList: any[]) => {
     return async dispatch => {
         let name = description.trim()
@@ -13,7 +19,7 @@ export const addMemo = (description: string, photoList: any[]) => {
             name,
             id: Math.random().toString(),
             photos: photoList,
-            creationDate: moment().format("DD-MM-YYYY")
+            creationDate: moment().valueOf()
         }
         await memoStorage.createMemoSnapshoot(newMemo)
         dispatch({
@@ -25,7 +31,7 @@ export const addMemo = (description: string, photoList: any[]) => {
 
 export const loadMemos = () => {
     return async dispatch => {
-        const memoList = await memoStorage.getMemoList();
+        const memoList = sortByDateDescending(await memoStorage.getMemoList())
         dispatch({
             type: LOAD_MEMOS,
             memoList
@@ -43,6 +49,16 @@ export const removeMemo = (id: string) => {
     }
 }
 
+export const removeMemos = (ids: string[]) => {
+    return async dispatch => {
+        await memoStorage.deleteMemos(ids)
+        const newMemos = sortByDateDescending(await memoStorage.getMemoList())
+        dispatch({
+            type: DELETE_MEMOS,
+            memoList: newMemos
+        })
+    }
+}
 export const renameMemo = (id: string, newName: string) => {
     return async (dispatch, getState) => {
         const renamedMemo: Memo = await memoStorage.renameMemo(id, newName)

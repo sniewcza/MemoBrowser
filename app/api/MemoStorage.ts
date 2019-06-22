@@ -25,6 +25,11 @@ class MemoStorage {
         await AsyncStorage.removeItem(`${STORE_NAME}:${id}`)
     }
 
+    deleteMemos = async (ids: string[]) => {
+        const keys = ids.map(id => `${STORE_NAME}:${id}`)
+        await AsyncStorage.multiRemove(keys)
+    }
+
     renameMemo = async (id: string, newName: string) => {
         const key = `${STORE_NAME}:${id}`
         const memo: Memo = JSON.parse(await AsyncStorage.getItem(key))
