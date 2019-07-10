@@ -10,10 +10,11 @@ import { Color } from "../config/ColorTheme"
 import { NavigationScreenProps } from "react-navigation"
 import { IconButton } from "../components/Buttons/IconButton"
 import { Photo } from "../model/Iterfaces";
+import { ThunkDispatch } from "redux-thunk";
+import { AnyAction } from "redux";
 
-interface Props extends NavigationScreenProps {
-    addmemo: (name: string, photoList: Photo[]) => any
-}
+type Props = ReturnType<typeof mapDispatchToProps> &
+    NavigationScreenProps
 
 interface State {
     photos: Photo[],
@@ -179,7 +180,7 @@ class MemoSeriesPreview extends React.Component<Props, State>{
     }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) => ({
     addmemo: (name: string, photoList: Photo[]) => dispatch(addMemo(name, photoList))
 })
 

@@ -24,7 +24,7 @@ export class MemoSeriesDetails extends React.Component<Props, State> {
         Dimensions.addEventListener('change', this.orientationChangeHandler
         );
     }
-    
+
     static navigationOptions = ({ navigation }: NavigationScreenProps) => {
         return {
             title: navigation.state.params.memo.name

@@ -1,7 +1,10 @@
-import { ADD_MEMO, DELETE_MEMO, LOAD_MEMOS, DELETE_MEMOS } from "./actionTypes"
+import { AddMemo, LoadMemos, DeleteMemo, } from "./actionTypes"
 import { Memo, Photo } from "../../model/Iterfaces"
 import { memoStorage } from "../../api/MemoStorage"
 import moment from "moment"
+import { ActionCreator } from "redux";
+import { ThunkAction } from "redux-thunk";
+import { AppState } from "../configureStore";
 
 const sortByDateDescending = (memoList: Memo[]) => {
     return memoList.sort((a, b) => {
@@ -9,8 +12,15 @@ const sortByDateDescending = (memoList: Memo[]) => {
     })
 }
 
-export const addMemo = (name: string, photoList: Photo[]) => {
-    return async dispatch => {
+export const addMemo: ActionCreator<
+    ThunkAction<
+        Promise<AddMemo>,
+        AppState,
+        null,
+        AddMemo
+    >
+> = (name: string, photoList: Photo[]) => {
+    return async (dispatch) => {
         let memoName = name.trim()
         if (memoName.length === 0) {
             memoName = ""
@@ -22,53 +32,70 @@ export const addMemo = (name: string, photoList: Photo[]) => {
             creationDate: moment().valueOf()
         }
         await memoStorage.createMemoSnapshoot(newMemo)
-        dispatch({
-            type: ADD_MEMO,
-            newMemo
+        return dispatch({
+            type: "ADD_MEMO",
+            memo: newMemo
         })
     }
 }
 
-export const loadMemos = () => {
+export const loadMemos: ActionCreator<
+    ThunkAction<
+        Promise<LoadMemos>,
+        AppState,
+        null,
+        LoadMemos>
+> = () => {
     return async dispatch => {
         const memoList = sortByDateDescending(await memoStorage.getMemoList())
-        dispatch({
-            type: LOAD_MEMOS,
+        return dispatch({
+            type: "LOAD_MEMOS",
             memoList
         })
     }
 }
 
-export const removeMemo = (id: string) => {
+export const removeMemo: ActionCreator<
+    ThunkAction<
+        Promise<DeleteMemo>,
+        AppState,
+        null,
+        DeleteMemo
+    >
+> = (id: string) => {
     return async dispatch => {
         await memoStorage.deleteMemo(id)
-        dispatch({
-            type: DELETE_MEMO,
-            id
+        return dispatch({
+            type: "DELETE_MEMO",
+            memoId: id
         })
     }
 }
 
-export const removeMemos = (ids: string[]) => {
+export const removeMemos: ActionCreator<
+    ThunkAction<
+        Promise<LoadMemos>,
+        AppState,
+        null,
+        LoadMemos
+    >
+> = (ids: string[]) => {
     return async dispatch => {
         await memoStorage.deleteMemos(ids)
-        const newMemos = sortByDateDescending(await memoStorage.getMemoList())
-        dispatch({
-            type: DELETE_MEMOS,
-            memoList: newMemos
-        })
+        return dispatch(loadMemos())
     }
 }
 
-export const renameMemo = (id: string, newName: string) => {
-    return async (dispatch, getState) => {
-        const renamedMemo: Memo = await memoStorage.renameMemo(id, newName)
-        const memoList: Memo[] = getState().memos.memos
-        const index = memoList.findIndex(item => item.id === renamedMemo.id)
-        const newList = [...memoList.slice(0, index), renamedMemo, ...memoList.slice(index + 1)]
-        dispatch({
-            type: LOAD_MEMOS,
-            memoList: newList
-        })
+export const renameMemo: ActionCreator<
+    ThunkAction<
+        Promise<LoadMemos>,
+        AppState,
+        null,
+        LoadMemos
+    >
+> = (id: string, newName: string) => {
+    return async dispatch => {
+        await memoStorage.renameMemo(id, newName)
+        return dispatch(loadMemos())
     }
 }

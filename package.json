@@ -31,6 +31,7 @@
     "@types/react-native-vector-icons": "^4.6.4",
     "@types/react-navigation": "^3.0.6",
     "@types/react-redux": "^7.0.5",
+    "@types/redux-thunk": "^2.1.0",
     "babel-jest": "^24.5.0",
     "jest": "^24.5.0",
     "metro-react-native-babel-preset": "^0.53.1",

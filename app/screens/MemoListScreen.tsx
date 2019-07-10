@@ -3,11 +3,12 @@ import { StyleSheet, View, StatusBar, Animated, Dimensions, UIManager, LayoutAni
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
-import { removeMemo, loadMemos, renameMemo, removeMemos } from "../store/index"
-import { Memo } from "../model/Iterfaces"
+import { removeMemo, loadMemos, renameMemo, removeMemos, AppState } from "../store"
 import { Color } from "../config/ColorTheme"
 import { NavigationScreenProps } from "react-navigation"
 import { DeletionBottomBar } from "../components/MenuBars/DeletionBottomBar"
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
 
 const CustomlayoutAnimationConfig: LayoutAnimationConfig = {
     duration: 500,
@@ -17,13 +18,9 @@ const CustomlayoutAnimationConfig: LayoutAnimationConfig = {
     },
 }
 
-interface Props extends NavigationScreenProps {
-    memos: Memo[]
-    deleteMemo: (id: string) => any
-    deleteMemos: (ids: string[]) => any
-    loadMemos: () => any
-    renameMemo: (id: string, newName: string) => any
-};
+type Props = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> &
+    NavigationScreenProps
 
 interface State {
     deletionMode: boolean
@@ -171,13 +168,13 @@ class MemoListView extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: AppState) => {
     return {
         memos: state.memos.memos
     }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) => {
     return {
         deleteMemo: (id: string) => dispatch(removeMemo(id)),
         loadMemos: () => dispatch(loadMemos()),
