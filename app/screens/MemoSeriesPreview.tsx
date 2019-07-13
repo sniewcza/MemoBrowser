@@ -147,7 +147,7 @@ class MemoSeriesPreview extends React.Component<Props, State>{
                     {photos.length === 0 ?
                         this.noPhotoContent() :
                         <ImageSwiper
-                            images={photos}
+                            photos={photos}
                             activePhotoIndex={activePhotoIndex}
                             onIndexChange={this.handleSwipe}
                         />

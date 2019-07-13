@@ -10,6 +10,7 @@
     "linkLib": "react-native link"
   },
   "dependencies": {
+    "@react-native-community/viewpager": "^1.1.7",
     "moment": "^2.24.0",
     "native-base": "^2.12.1",
     "react": "16.8.3",
