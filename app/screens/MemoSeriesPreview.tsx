@@ -164,6 +164,7 @@ class MemoSeriesPreview extends React.Component<Props, State>{
                 <Modal
                     animated
                     animationType="slide"
+                    hardwareAccelerated={true}
                     visible={modalActive}
                     onRequestClose={() => this.setState({
                         modalActive: false

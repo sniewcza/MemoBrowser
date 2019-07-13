@@ -1,5 +1,5 @@
 import React from "react"
-import { View, TextInput, StyleSheet } from "react-native"
+import { TextInput, StyleSheet, KeyboardAvoidingView } from "react-native"
 
 interface Props {
     visible: boolean;
@@ -12,7 +12,7 @@ export class MemoDescriptionTextInput extends React.Component<Props> {
     render() {
         const { text, onAccept, onTextChange } = this.props
         return (
-            <View style={styles.container}>
+            <KeyboardAvoidingView style={styles.container} enabled behavior="padding">
                 <TextInput
                     style={styles.textInput}
                     autoFocus
@@ -24,7 +24,7 @@ export class MemoDescriptionTextInput extends React.Component<Props> {
                     selectionColor={"black"}
                     textAlign={'center'}
                 />
-            </View>
+            </KeyboardAvoidingView>
         )
     }
 }
