@@ -195,10 +195,10 @@ const styles = StyleSheet.create({
     actionButton: {
         position: 'absolute',
         right: 20,
-        bottom: 20,
+        bottom: 20
     },
     menuBar: {
         position: 'absolute',
-        bottom: 0,
+        bottom: 0
     }
 });

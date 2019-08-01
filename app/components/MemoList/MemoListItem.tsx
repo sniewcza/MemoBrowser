@@ -16,11 +16,12 @@ interface Props {
 export class MemoListItem extends React.PureComponent<Props> {
     render() {
         return (
-            < View style={this.props.style} {...this.props}>
-                {this.props.deletionMode && <CheckBox checked={this.props.checked}></CheckBox>}
-                <View style={{ maxWidth: "50%" }}>
+            < View  {...this.props}>
+                {this.props.deletionMode && <View style={styles.withRightMargin}><CheckBox checked={this.props.checked} /></View>}
+                {this.props.name.length > 0 && <View style={styles.nameContainer} >
                     <Text style={styles.text} numberOfLines={1}>{this.props.name}</Text>
-                </View>
+                </View>}
+
                 <Text style={styles.date}>{moment(this.props.creationDate).format("DD-MM-YYYY")}</Text>
                 <View style={styles.metadata}>
                     <Text style={styles.text}>{this.props.photosCount}</Text>
@@ -35,8 +36,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
         color: "black",
-        marginRight: 5,
-        marginLeft: 5
+        marginRight: 5
     },
     date: {
         color: "black",
@@ -46,4 +46,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         marginLeft: 'auto',
     },
+    nameContainer: {
+        maxWidth: "50%"
+    },
+    withRightMargin: {
+        marginRight: 5
+    }
 })
