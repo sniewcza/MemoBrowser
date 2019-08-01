@@ -3,6 +3,7 @@ import { MemoListScreen } from "../screens/MemoListScreen"
 import { MemoSeriesPreviewScreen } from "../screens/MemoSeriesPreview"
 import { MemoSeriesDetails } from "../screens/MemoSeriesDetails"
 import { Color } from "./ColorTheme"
+import { transitionConfig } from "./TransitionConfig"
 
 const routeNavigator = createStackNavigator({
     Default: {
@@ -15,7 +16,7 @@ const routeNavigator = createStackNavigator({
             headerTitleStyle: {
                 color: Color.onPrimary
             },
-            headerTintColor: Color.onPrimary
+            headerTintColor: Color.onPrimary,
         }
     },
     MemoSeries: {
@@ -46,6 +47,8 @@ const routeNavigator = createStackNavigator({
 }, {
         headerMode: "screen",
         headerLayoutPreset: "center",
+        transitionConfig: transitionConfig
 
     })
+
 export default createAppContainer(routeNavigator);
