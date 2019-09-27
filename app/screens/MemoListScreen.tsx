@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, StatusBar, Animated, Dimensions, UIManager, LayoutAnimation, LayoutAnimationConfig } from 'react-native';
+import { StyleSheet, View, StatusBar, Animated, Dimensions, UIManager, LayoutAnimation, LayoutAnimationConfig, Alert } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
@@ -101,7 +101,6 @@ class MemoListView extends Component<Props, State> {
                 memosToDelete: [...memosToDelete, id]
             })
         }
-
     }
 
     cancelDeletionMode = () => {
