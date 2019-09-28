@@ -23,7 +23,6 @@ export class ActionButton extends React.PureComponent<Props> {
 const styles = StyleSheet.create({
     actionButton: {
         zIndex: 1,
-        elevation: 4,
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 100,

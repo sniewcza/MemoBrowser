@@ -1,7 +1,7 @@
 import React from "react";
 import ViewPager from "@react-native-community/viewpager";
 import { Image, View, StyleSheet } from "react-native"
-import { Photo } from "../../model/Iterfaces";
+import { Photo } from "../../model";
 
 interface Props {
     photos: Photo[],

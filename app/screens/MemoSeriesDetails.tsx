@@ -1,6 +1,6 @@
 import React from "react"
 import { FlatList, View, Image, StyleSheet, Dimensions } from "react-native"
-import { Photo } from "../model/Iterfaces";
+import { Photo } from "../model";
 import { NavigationScreenProps } from "react-navigation";
 
 type Orientation = "portrait" | "landscape";

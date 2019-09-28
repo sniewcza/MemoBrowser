@@ -2,6 +2,7 @@ import { createAppContainer, createStackNavigator } from 'react-navigation';
 import { MemoListScreen } from "../screens/MemoListScreen"
 import { MemoSeriesPreviewScreen } from "../screens/MemoSeriesPreview"
 import { MemoSeriesDetails } from "../screens/MemoSeriesDetails"
+import { SettingsScreen } from "../screens/SettingsScreen"
 import { Color } from "./ColorTheme"
 import { transitionConfig } from "./TransitionConfig"
 
@@ -42,6 +43,20 @@ const routeNavigator = createStackNavigator({
                 color: Color.onPrimary
             },
             headerTintColor: Color.onPrimary
+        }
+    },
+    Settings: {
+        screen: SettingsScreen,
+        navigationOptions: {
+            title: "Settings",
+            headerStyle: {
+                backgroundColor: Color.primary,
+            },
+            headerTitleStyle: {
+                color: Color.onPrimary
+            },
+            headerTintColor: Color.onPrimary,
+
         }
     }
 }, {

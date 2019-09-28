@@ -1,7 +1,7 @@
 import React from "react";
 import { MemoSwipeRow } from "./MemoSwipeRow"
 import { FlatList, View, StyleSheet, Text } from "react-native"
-import { Memo } from "../../model/Iterfaces"
+import { Memo } from "../../model"
 
 interface Props {
     memos: Memo[]

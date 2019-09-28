@@ -9,7 +9,7 @@ import { addMemo } from "../store/index"
 import { Color } from "../config/ColorTheme"
 import { NavigationScreenProps } from "react-navigation"
 import { IconButton } from "../components/Buttons/IconButton"
-import { Photo } from "../model/Iterfaces";
+import { Photo } from "../model";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 

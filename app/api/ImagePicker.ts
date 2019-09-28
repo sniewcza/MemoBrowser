@@ -1,5 +1,5 @@
 import ImagePicker from 'react-native-image-picker';
-import { Photo } from "../model/Iterfaces"
+import { Photo } from "../model"
 
 interface Options {
     title?: string;

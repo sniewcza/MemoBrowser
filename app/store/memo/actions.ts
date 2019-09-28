@@ -1,10 +1,10 @@
-import { AddMemo, LoadMemos, DeleteMemo, } from "./actionTypes"
-import { Memo, Photo } from "../../model/Iterfaces"
+import { AddMemo, LoadMemos, DeleteMemo, } from "./types"
+import { Memo, Photo } from "../../model"
 import { memoStorage } from "../../api/MemoStorage"
-import moment from "moment"
 import { ActionCreator } from "redux";
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../configureStore";
+import moment from "moment"
 
 const sortByDateDescending = (memoList: Memo[]) => {
     return memoList.sort((a, b) => {
@@ -48,6 +48,8 @@ export const loadMemos: ActionCreator<
 > = () => {
     return async dispatch => {
         const memoList = sortByDateDescending(await memoStorage.getMemoList())
+        console.log(memoList);
+
         return dispatch({
             type: "LOAD_MEMOS",
             memoList

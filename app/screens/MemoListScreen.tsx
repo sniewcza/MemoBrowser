@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, StatusBar, Animated, Dimensions, UIManager, LayoutAnimation, LayoutAnimationConfig, Alert } from 'react-native';
+import { StyleSheet, View, StatusBar, Animated, Dimensions, UIManager, LayoutAnimation, LayoutAnimationConfig } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
-import { removeMemo, loadMemos, renameMemo, removeMemos, AppState } from "../store"
+import { removeMemo, loadMemos, renameMemo, removeMemos, AppState, getSettings } from "../store"
 import { Color } from "../config/ColorTheme"
 import { NavigationScreenProps } from "react-navigation"
 import { DeletionBottomBar } from "../components/MenuBars/DeletionBottomBar"
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { IconButton } from '../components/Buttons/IconButton';
 
 const CustomlayoutAnimationConfig: LayoutAnimationConfig = {
     duration: 500,
@@ -43,10 +44,26 @@ class MemoListView extends Component<Props, State> {
         }
     }
 
+    static navigationOptions = ({ navigation }: NavigationScreenProps) => ({
+        headerRight:
+            <IconButton
+                iconName="md-settings"
+                color={Color.onPrimary}
+                iconSize={30}
+                style={styles.headerButton}
+                onPress={navigation.getParam("settingsHandler")}
+            />
+    })
+
+
     componentDidMount() {
         StatusBar.setBackgroundColor(Color.statusBar, true)
-        if (this.props.memos.length === 0) {
+        this.props.navigation.setParams({ settingsHandler: this.handleSettingsButtonPress })
+        if (this.props.memos === undefined) {
             this.props.loadMemos()
+        }
+        if (this.props.settings === undefined) {
+            this.props.loadSettings()
         }
     }
 
@@ -65,6 +82,10 @@ class MemoListView extends Component<Props, State> {
         }
     }
 
+    handleSettingsButtonPress = () => {
+        this.props.navigation.navigate("Settings")
+    }
+
     handleActionButtonPress = () => {
         this.props.navigation.navigate("MemoSeries")
     }
@@ -74,7 +95,7 @@ class MemoListView extends Component<Props, State> {
     }
 
     handleMemoItemPress = (id: string) => {
-        const memo = this.props.memos.find(memo => memo.id === id)
+        const memo = this.props.memos!.find(memo => memo.id === id)
         this.props.navigation.push("MemoSeriesDetails", { memo })
     }
 
@@ -145,7 +166,7 @@ class MemoListView extends Component<Props, State> {
         return (
             <View style={styles.container}>
                 <MemoList
-                    memos={this.props.memos}
+                    memos={this.props.memos!}
                     onItemPress={this.handleMemoItemPress}
                     onItemLongPress={this.handleMemoItemLongPress}
                     onItemDelete={this.handleDeleteMemo}
@@ -167,20 +188,20 @@ class MemoListView extends Component<Props, State> {
     }
 }
 
-const mapStateToProps = (state: AppState) => {
-    return {
-        memos: state.memos.memos
-    }
-}
+const mapStateToProps = (state: AppState) => ({
+    memos: state.memos.memos,
+    settings: state.settings.settings
+})
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) => {
-    return {
-        deleteMemo: (id: string) => dispatch(removeMemo(id)),
-        loadMemos: () => dispatch(loadMemos()),
-        renameMemo: (id: string, newName: string) => dispatch(renameMemo(id, newName)),
-        deleteMemos: (ids: string[]) => dispatch(removeMemos(ids))
-    }
-}
+
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) => ({
+    deleteMemo: (id: string) => dispatch(removeMemo(id)),
+    loadMemos: () => dispatch(loadMemos()),
+    renameMemo: (id: string, newName: string) => dispatch(renameMemo(id, newName)),
+    deleteMemos: (ids: string[]) => dispatch(removeMemos(ids)),
+    loadSettings: () => dispatch(getSettings())
+})
+
 
 export const MemoListScreen = connect(mapStateToProps, mapDispatchToProps)(MemoListView)
 
@@ -195,6 +216,10 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 20,
         bottom: 20
+    },
+    headerButton: {
+        padding: 4,
+        marginRight: 20
     },
     menuBar: {
         position: 'absolute',

@@ -1,5 +1,9 @@
 import { Action } from "redux";
-import { Memo } from "../../model/Iterfaces";
+import { Memo } from "../../model"
+
+export interface State {
+    memos: Memo[] | undefined
+}
 
 export interface AddMemo extends Action<"ADD_MEMO"> {
     memo: Memo

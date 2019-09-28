@@ -1,16 +1,16 @@
-import { MemoActions } from "../actions/actionTypes"
-import { Memo } from "../../model/Iterfaces"
+import { MemoActions, State } from "./types"
 import { Reducer } from "redux";
 
-const defaultState = {
-    memos: Array<Memo>()
+
+const defaultState: State = {
+    memos: undefined
 }
 
 export const memoReducer: Reducer<typeof defaultState, MemoActions> = (state = defaultState, action) => {
     switch (action.type) {
         case "ADD_MEMO":
             return {
-                memos: [...state.memos, action.memo]
+                memos: [...state.memos!, action.memo]
             }
         case "DELETE_MEMO":
             const memos = state.memos.filter(memo => memo.id !== action.memoId)

@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-community/async-storage"
-import { Memo } from "../model/Iterfaces"
+import { Memo } from "../model"
 
 const STORE_NAME = '@MemoStore'
+const regexp = new RegExp(`${STORE_NAME}`)
 
 class MemoStorage {
 
@@ -12,8 +13,9 @@ class MemoStorage {
 
     getMemoList = async () => {
         const keys = await AsyncStorage.getAllKeys();
+        const memoKeys = keys.filter(key => regexp.test(key))
         let memoList = [];
-        for (let key of keys) {
+        for (let key of memoKeys) {
             const JsonData = await AsyncStorage.getItem(key)
             const memo: Memo = JSON.parse(JsonData);
             memoList.push(memo)
