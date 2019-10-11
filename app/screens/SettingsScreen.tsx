@@ -6,10 +6,23 @@ import { AnyAction } from "redux";
 import { Settings } from "../model";
 import { setSettings } from "../store/settings"
 import { connect } from "react-redux";
+import * as LocalAuthService from "../api/LocalAuthService";
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
 
-class SettingsView extends React.Component<Props> {
+interface State {
+    authorizationPossible: boolean | null
+}
+
+class SettingsView extends React.Component<Props, State> {
+    state = {
+        authorizationPossible: null
+    }
+    async componentDidMount() {
+        this.setState({
+            authorizationPossible: await LocalAuthService.isDeviceSecured()
+        })
+    }
     handleChange = (value: boolean) => {
         const newSettings: Settings = {
             memoListSecured: value
@@ -17,11 +30,12 @@ class SettingsView extends React.Component<Props> {
         this.props.setSettings(newSettings)
     }
     render() {
+        const { authorizationPossible } = this.state
         return (
             <SafeAreaView style={styles.container}>
-                <View style={styles.settingRow}>
+                <View style={[styles.settingRow, authorizationPossible ? styles.active : styles.inactive]}>
                     <Text>Secure memos with device lock</Text>
-                    <Switch value={this.props.memoListSecured} onValueChange={this.handleChange} style={styles.switch}></Switch>
+                    <Switch disabled={!authorizationPossible} value={this.props.memoListSecured} onValueChange={this.handleChange} style={styles.switch}></Switch>
                 </View>
             </SafeAreaView >
         )
@@ -48,6 +62,12 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         borderColor: "black",
         borderBottomWidth: StyleSheet.hairlineWidth
+    },
+    active: {
+        opacity: 1
+    },
+    inactive: {
+        opacity: 0.4
     },
     switch: {
         marginLeft: "auto",

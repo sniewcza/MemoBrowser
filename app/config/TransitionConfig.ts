@@ -11,7 +11,6 @@ export const transitionConfig = (): TransitionConfig => {
         },
         screenInterpolator: (sceneProps: NavigationTransitionProps) => {
             const { layout, position, scene, scenes } = sceneProps
-            console.log(sceneProps);
 
             const thisSceneIndex = scene.index
 

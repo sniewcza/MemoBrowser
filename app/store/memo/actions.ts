@@ -48,7 +48,6 @@ export const loadMemos: ActionCreator<
 > = () => {
     return async dispatch => {
         const memoList = sortByDateDescending(await memoStorage.getMemoList())
-        console.log(memoList);
 
         return dispatch({
             type: "LOAD_MEMOS",

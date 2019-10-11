@@ -5,6 +5,7 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import android.content.Context;
 import com.facebook.react.PackageList;
+import com.memobrowser.modules.localAuth.LocalAuthPackage;
 import com.reactnativecommunity.viewpager.RNCViewPagerPackage;
 
 import com.imagepicker.ImagePickerPackage;
@@ -29,16 +30,9 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      // return Arrays.<ReactPackage>asList(
-      //     new MainReactPackage(),
-      //       new RNCViewPagerPackage(),
-      //       new RNGestureHandlerPackage(),
-      //       new ImagePickerPackage(),
-      //       new VectorIconsPackage()
-      // );
-        @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
              packages.add( new RNCViewPagerPackage());
+             packages.add(new LocalAuthPackage());
           return packages;
     }
 
