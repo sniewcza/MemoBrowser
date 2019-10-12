@@ -54,12 +54,12 @@ public class LocalAuthModule extends ReactContextBaseJavaModule {
 
     }
     @ReactMethod
-    public void authorize(Promise promise){
+    public void authorize(String title ,Promise promise){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mPromise = promise;
             final ReactApplicationContext context = getReactApplicationContext();
             KeyguardManager m = (KeyguardManager) context.getSystemService(context.KEYGUARD_SERVICE);
-            Intent authIntent = m.createConfirmDeviceCredentialIntent("title", "desc");
+            Intent authIntent = m.createConfirmDeviceCredentialIntent(title, null);
             context.getCurrentActivity().startActivityForResult(authIntent, 2, null);
         }
     }

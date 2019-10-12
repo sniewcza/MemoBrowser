@@ -19,6 +19,8 @@ class SettingsView extends React.Component<Props, State> {
         authorizationPossible: null
     }
     async componentDidMount() {
+        //  console.log(this.props.se);
+
         this.setState({
             authorizationPossible: await LocalAuthService.isDeviceSecured()
         })
@@ -43,7 +45,7 @@ class SettingsView extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-    memoListSecured: state.settings.memoListSecured
+    memoListSecured: state.settings.settings!.memoListSecured
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, null, AnyAction>) => ({

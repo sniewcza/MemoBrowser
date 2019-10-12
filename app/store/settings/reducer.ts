@@ -11,12 +11,12 @@ export const settingsReducer: Reducer<State, SettingsActions> = (state = default
         case "GET_SETTINGS":
             return {
                 ...state,
-                ...action.settings
+                settings: action.settings
             }
         case "SET_SETTINGS":
             return {
                 ...state,
-                ...action.settings
+                settings: action.settings
             }
         default:
             return state

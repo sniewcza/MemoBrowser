@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, StatusBar, Animated, Dimensions, UIManager, LayoutAnimation, LayoutAnimationConfig } from 'react-native';
+import { StyleSheet, View, StatusBar, Animated, Dimensions, UIManager, LayoutAnimation, LayoutAnimationConfig, ActivityIndicator } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { connect } from "react-redux"
@@ -10,6 +10,9 @@ import { DeletionBottomBar } from "../components/MenuBars/DeletionBottomBar"
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { IconButton } from '../components/Buttons/IconButton';
+import { Loader } from '../components/Loaders/Loader';
+import { UnlockButton } from '../components/Buttons/UnlockButton';
+import { authorize } from "../api/LocalAuthService"
 
 const CustomlayoutAnimationConfig: LayoutAnimationConfig = {
     duration: 500,
@@ -26,6 +29,7 @@ type Props = ReturnType<typeof mapStateToProps> &
 interface State {
     deletionMode: boolean
     memosToDelete: string[]
+    isLocked: boolean
 }
 
 UIManager.setLayoutAnimationEnabledExperimental &&
@@ -80,10 +84,17 @@ class MemoListView extends Component<Props, State> {
         if (prevProps.memos !== this.props.memos) {
             LayoutAnimation.configureNext(CustomlayoutAnimationConfig)
         }
+        if (prevProps.settings !== this.props.settings) {
+            this.setState({
+                isLocked: this.props.settings!.memoListSecured
+            })
+        }
     }
 
     handleSettingsButtonPress = () => {
-        this.props.navigation.navigate("Settings")
+        if (!this.state.isLocked) {
+            this.props.navigation.navigate("Settings")
+        }
     }
 
     handleActionButtonPress = () => {
@@ -162,9 +173,21 @@ class MemoListView extends Component<Props, State> {
             })])
     }
 
+    handleUnlock = async () => {
+        this.setState({
+            isLocked: !await authorize("Authorize yourself to unlock memos")
+        })
+    }
     render() {
+        if (this.state.isLocked) {
+            return (
+                <View style={styles.container}>
+                    <UnlockButton animated={true} onPress={this.handleUnlock}></UnlockButton>
+                </View>
+            )
+        }
         return (
-            <View style={styles.container}>
+            <Loader isLoading={!this.props.settings} style={styles.container}>
                 <MemoList
                     memos={this.props.memos!}
                     onItemPress={this.handleMemoItemPress}
@@ -183,7 +206,8 @@ class MemoListView extends Component<Props, State> {
                 <Animated.View style={[styles.menuBar, { transform: [{ translateY: this.deletionMenuBarAnimatedValue }] }]}>
                     <DeletionBottomBar onCancelPress={this.cancelDeletionMode} onDeletePress={this.deleteMemos} />
                 </Animated.View>
-            </View>
+
+            </Loader>
         );
     }
 }

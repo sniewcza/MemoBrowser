@@ -10,6 +10,8 @@ type AsyncActionCreator<a extends Action> = ActionCreator<ThunkAction<Promise<a>
 export const getSettings: AsyncActionCreator<GetSettings> = () => {
     return async dispatch => {
         const settings = await SettingStorage.getSettings()
+      //  console.log(settings);
+
         return dispatch({
             type: "GET_SETTINGS",
             settings
