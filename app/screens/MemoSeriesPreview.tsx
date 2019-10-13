@@ -12,6 +12,7 @@ import { IconButton } from "../components/Buttons/IconButton"
 import { Photo } from "../model";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
+import { appStrings } from "../config/Strings";
 
 type Props = ReturnType<typeof mapDispatchToProps> &
     NavigationScreenProps
@@ -134,7 +135,7 @@ class MemoSeriesPreview extends React.Component<Props, State>{
     noPhotoContent = () => {
         return (
             <View style={{ alignItems: "center" }}>
-                <Text style={styles.initialText} >Take photo from camera or pick some from gallery</Text>
+                <Text adjustsFontSizeToFit={true} style={styles.initialText}>{appStrings.emptyPhotoSeriesLabel}</Text>
             </View>
         )
     }
@@ -199,7 +200,4 @@ const styles = StyleSheet.create({
         flex: 9,
         justifyContent: "center",
     },
-    initialText: {
-        fontSize: 16
-    }
 })

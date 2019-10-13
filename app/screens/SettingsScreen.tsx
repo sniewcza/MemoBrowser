@@ -7,6 +7,7 @@ import { Settings } from "../model";
 import { setSettings } from "../store/settings"
 import { connect } from "react-redux";
 import * as LocalAuthService from "../api/LocalAuthService";
+import { appStrings } from "../config/Strings";
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
 
@@ -19,8 +20,6 @@ class SettingsView extends React.Component<Props, State> {
         authorizationPossible: null
     }
     async componentDidMount() {
-        //  console.log(this.props.se);
-
         this.setState({
             authorizationPossible: await LocalAuthService.isDeviceSecured()
         })
@@ -36,7 +35,7 @@ class SettingsView extends React.Component<Props, State> {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={[styles.settingRow, authorizationPossible ? styles.active : styles.inactive]}>
-                    <Text>Secure memos with device lock</Text>
+                    <Text>{appStrings.secureMemosSettingLabel}</Text>
                     <Switch disabled={!authorizationPossible} value={this.props.memoListSecured} onValueChange={this.handleChange} style={styles.switch}></Switch>
                 </View>
             </SafeAreaView >

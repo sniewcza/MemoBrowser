@@ -2,6 +2,7 @@ import React from "react";
 import { MemoSwipeRow } from "./MemoSwipeRow"
 import { FlatList, View, StyleSheet, Text } from "react-native"
 import { Memo } from "../../model"
+import { appStrings } from "../../config/Strings";
 
 interface Props {
     memos: Memo[]
@@ -37,7 +38,7 @@ export class MemoList extends React.Component<Props>{
     listEmptyComponent = () => {
         return (
             <View style={styles.emptyList}>
-                <Text style={styles.text}>Memo list is empty</Text>
+                <Text style={styles.text}>{appStrings.emptyMemoListLabel}</Text>
             </View>
         )
     }

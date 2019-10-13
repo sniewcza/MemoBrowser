@@ -3,7 +3,7 @@ import { SwipeRow } from "native-base"
 import { View, StyleSheet, TouchableNativeFeedback, TextInput, Animated, TransformsStyle, Keyboard, EmitterSubscription } from "react-native"
 import SubMenuButton from "../Buttons/MemoListItemSubmenuButton"
 import Icon from "react-native-vector-icons/Ionicons"
-import { deleteMemoAlert } from "../Alerts/deleteMemoAlert"
+import { deleteMemoAlert } from "../Alerts/DeleteMemoAlert"
 import { MemoListItem } from "./MemoListItem"
 import { Memo } from "../../model";
 import { Color } from "../../config/ColorTheme";

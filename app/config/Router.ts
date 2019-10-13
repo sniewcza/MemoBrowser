@@ -5,12 +5,12 @@ import { MemoSeriesDetails } from "../screens/MemoSeriesDetails"
 import { SettingsScreen } from "../screens/SettingsScreen"
 import { Color } from "./ColorTheme"
 import { transitionConfig } from "./TransitionConfig"
-
+import { appStrings } from "./Strings"
 const routeNavigator = createStackNavigator({
     Default: {
         screen: MemoListScreen,
         navigationOptions: {
-            title: "Your Memos",
+            title: appStrings.memoScreenTitle,
             headerStyle: {
                 backgroundColor: Color.primary,
             },
@@ -23,7 +23,7 @@ const routeNavigator = createStackNavigator({
     MemoSeries: {
         screen: MemoSeriesPreviewScreen,
         navigationOptions: {
-            title: "Memo Series",
+            title: appStrings.memoSeriesScreenTitle,
             headerStyle: {
                 backgroundColor: Color.primary,
             },
@@ -48,7 +48,7 @@ const routeNavigator = createStackNavigator({
     Settings: {
         screen: SettingsScreen,
         navigationOptions: {
-            title: "Settings",
+            title: appStrings.settingsScreenTitle,
             headerStyle: {
                 backgroundColor: Color.primary,
             },
