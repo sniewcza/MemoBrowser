@@ -84,11 +84,11 @@ class MemoListView extends Component<Props, State> {
         if (prevProps.memos !== this.props.memos) {
             LayoutAnimation.configureNext(CustomlayoutAnimationConfig)
         }
-        if (prevProps.settings !== this.props.settings) {
-            this.setState({
-                isLocked: this.props.settings!.memoListSecured
-            })
-        }
+        // if (prevProps.settings !== this.props.settings) {
+        //     this.setState({
+        //         isLocked: this.props.settings!.memoListSecured
+        //     })
+        // }
     }
 
     handleSettingsButtonPress = () => {
@@ -98,7 +98,7 @@ class MemoListView extends Component<Props, State> {
     }
 
     handleActionButtonPress = () => {
-        this.props.navigation.navigate("MemoSeries")
+        this.props.navigation.navigate("Preview Screen")
     }
 
     handleDeleteMemo = (id: string) => {
@@ -107,7 +107,7 @@ class MemoListView extends Component<Props, State> {
 
     handleMemoItemPress = (id: string) => {
         const memo = this.props.memos!.find(memo => memo.id === id)
-        this.props.navigation.push("MemoSeriesDetails", { memo })
+        this.props.navigation.push("Details Screen", { memo })
     }
 
     handleRenameMemo = (id: string, newName: string) => {

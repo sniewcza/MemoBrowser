@@ -1,13 +1,11 @@
 import React from "react"
 import { FlatList, View, Image, StyleSheet, Dimensions } from "react-native"
 import { Photo } from "../model";
-import { NavigationScreenProps } from "react-navigation";
+import { NavigationProp, RouteProp, NavigationP } from "@react-navigation/native"
 
 type Orientation = "portrait" | "landscape";
 
-interface Props extends NavigationScreenProps {
-
-}
+interface Props { }
 
 interface State {
     photos: Photo[]
@@ -18,7 +16,7 @@ export class MemoSeriesDetails extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
-            photos: this.props.navigation.state.params.memo.photos,
+            photos: this.props.route.params.memo.photos,
             orientation: this.isPortrait() ? "portrait" : "landscape"
         }
         Dimensions.addEventListener('change', this.orientationChangeHandler
