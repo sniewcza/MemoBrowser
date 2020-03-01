@@ -1,70 +1,73 @@
-import React from "react"
+import React, { FC, useEffect, useState } from "react"
 import { FlatList, View, Image, StyleSheet, Dimensions } from "react-native"
 import { Photo } from "../model";
-import { NavigationProp, RouteProp, NavigationP } from "@react-navigation/native"
 
 type Orientation = "portrait" | "landscape";
 
-interface Props { }
 
-interface State {
-    photos: Photo[]
-    orientation: Orientation
+interface Props {
+    navigation: any,
+    route: any
 }
 
-export class MemoSeriesDetails extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
-        this.state = {
-            photos: this.props.route.params.memo.photos,
-            orientation: this.isPortrait() ? "portrait" : "landscape"
-        }
-        Dimensions.addEventListener('change', this.orientationChangeHandler
+const getOrientation = (): Orientation => {
+    const { height, width } = Dimensions.get('screen');
+    return height >= width ? "portrait" : "landscape"
+};
+
+export const MemoSeriesDetails: FC<Props> = (props) => {
+    const [orientation, setOrientation] = useState<Orientation>(getOrientation())
+    useEffect(() => {
+        Dimensions.addEventListener('change', orientationChangeHandler
         );
-    }
-
-    static navigationOptions = ({ navigation }: NavigationScreenProps) => {
-        return {
-            title: navigation.state.params.memo.name
+        return () => {
+            Dimensions.removeEventListener("change", orientationChangeHandler)
         }
+    }, [])
+
+    const orientationChangeHandler = () => {
+        setOrientation(getOrientation())
     }
 
-    componentWillUnmount() {
-        Dimensions.removeEventListener("change", this.orientationChangeHandler)
+    const getImageStyle = (photo: Photo) => {
+        const { width } = Dimensions.get("screen")
+        const aspectRatio = photo.height / photo.width
+        switch (orientation) {
+            case "portrait":
+                return {
+                    width: width,
+                    height: width * aspectRatio
+                }
+            case "landscape":
+                return {
+                    width: width * 0.8,
+                    height: width * 0.8 * aspectRatio
+                }
+        }
+
     }
 
-
-    orientationChangeHandler = () => {
-        this.setState({
-            orientation: this.isPortrait() ? 'portrait' : 'landscape'
-        });
-    }
-    isPortrait = () => {
-        const dim = Dimensions.get('screen');
-        return dim.height >= dim.width;
-    };
-
-    _renderItem = ({ item }: { item: Photo }) => {
-        const aspectRatio = item.height / item.width
-        const width = Dimensions.get("window").width
+    const renderItem = ({ item }: { item: Photo }) => {
         return (
-            <View style={{ width: width, height: width * aspectRatio }} >
-                <Image source={{ uri: item.uri }} resizeMode={"contain"} style={{ width: "100%", height: "100%" }} />
+            <View style={{ justifyContent: "center", alignItems: "center" }} >
+                <Image source={{ uri: item.uri }} resizeMode={"cover"} style={getImageStyle(item)} />
             </View>
         )
     }
-    render() {
-        return (
-            <View style={styles.container} >
-                <FlatList data={this.state.photos}
-                    renderItem={this._renderItem}
-                    keyExtractor={(item) => Math.random().toString()}
-                    ItemSeparatorComponent={() => <View style={{ height: 5 }}></View>}>
-                </FlatList>
-            </View>
-        )
-    }
+
+    return (
+        <View style={styles.container} >
+            <FlatList data={props.route.params.memo.photos}
+                showsVerticalScrollIndicator={false}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.uri}
+                ItemSeparatorComponent={() => <View style={{ height: 5 }}></View>}>
+            </FlatList>
+        </View>
+    )
+
 }
+
 
 const styles = StyleSheet.create({
     container: {

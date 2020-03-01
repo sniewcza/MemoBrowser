@@ -1,192 +1,154 @@
-import React from "react";
+import React, { FC, useEffect, useState } from "react";
 import { ImageSwiper } from "../components/ImageSwpier/ImageSwiper"
-import { Modal, View, Text, StyleSheet, Keyboard, EmitterSubscription } from "react-native"
+import { Modal, View, Text, StyleSheet, Keyboard, PushNotificationIOS } from "react-native"
 import { ImageSwiperBottomBar } from "../components/ImageSwpier/ImageSwiperBottomBar"
 import { MemoDescriptionTextInput } from "../components/TextInputs/MemoDescriptionTextInput"
 import ImagePicker from "../api/ImagePicker"
-import { connect } from "react-redux"
+import { useDispatch } from "react-redux"
 import { addMemo } from "../store/index"
 import { Color } from "../config/ColorTheme"
-import { NavigationScreenProps } from "react-navigation"
 import { IconButton } from "../components/Buttons/IconButton"
 import { Photo } from "../model";
-import { ThunkDispatch } from "redux-thunk";
-import { AnyAction } from "redux";
 import { appStrings } from "../config/Strings";
-
-type Props = ReturnType<typeof mapDispatchToProps> &
-    NavigationScreenProps
+import { useNavigation } from "@react-navigation/native";
 
 interface State {
     photos: Photo[],
-    activePhotoIndex: number;
-    descriptionText: string
-    modalActive: boolean
+    activeIndex: number;
 }
 
-class MemoSeriesPreview extends React.Component<Props, State>{
-    private keyboardEventSubscription: EmitterSubscription | null
-    constructor(props: Props) {
-        super(props)
-        this.keyboardEventSubscription = null
-        this.state = {
-            photos: [],
-            activePhotoIndex: -1,
-            modalActive: false,
-            descriptionText: ""
+export const MemoSeriesPreview: FC = props => {
+    const [state, setState] = useState<State>({ photos: [], activeIndex: -1 })
+    const [modalActive, setModalActive] = useState(false)
+    const [descriptionText, setDescriptionText] = useState('')
+    const dispatch = useDispatch()
+    const navigation = useNavigation()
+
+    useEffect(() => {
+        const keyboardSub = Keyboard.addListener("keyboardDidHide", keyboardDidHide)
+        return () => {
+            keyboardSub && keyboardSub.remove()
         }
-    }
+    })
 
-    static navigationOptions = ({ navigation }: NavigationScreenProps) => {
-        return {
-            headerRight:
-                <IconButton
-                    onPress={navigation.getParam('deleteHandler')}
-                    style={styles.headerButton}
-                    iconName={"md-trash"}
-                    iconSize={30}
-                    color={Color.onPrimary}
-                />
-        };
-    };
-
-    componentDidMount() {
-        this.props.navigation.setParams({ deleteHandler: this.deletePhoto });
-        this.keyboardEventSubscription = Keyboard.addListener("keyboardDidHide", this.keyboardDidHide)
-    }
-
-    componentWillUnmount() {
-        if (this.keyboardEventSubscription) {
-            this.keyboardEventSubscription.remove()
-        }
-    }
-
-    keyboardDidHide = () => {
-        if (this.state.modalActive) {
-            this.setState({
-                modalActive: false
+    const deletePhoto = () => {
+        const { photos, activeIndex } = state
+        if (photos.length !== 0) {
+            setState({
+                photos: [...photos.filter((item, index) => index !== activeIndex)],
+                activeIndex: activeIndex === photos.length - 1 ?
+                    activeIndex - 1 : activeIndex
             })
         }
     }
 
-    takeCameraPhoto = async () => {
+    navigation.setOptions({
+        headerRight: () =>
+            <IconButton
+                onPress={deletePhoto}
+                style={styles.headerButton}
+                iconName={"md-trash"}
+                iconSize={30}
+                color={Color.onPrimary}
+            />
+    })
+
+    const keyboardDidHide = () => {
+        if (modalActive) {
+            setModalActive(false)
+        }
+    }
+
+    const takeCameraPhoto = async () => {
         const photo = await ImagePicker.takeCameraPhoto()
         if (photo) {
-            this.setState(prevState => ({
-                photos: [...prevState.photos, photo],
-                activePhotoIndex: prevState.photos.length
-            }))
+            setState({
+                photos: [...state.photos, photo],
+                activeIndex: state.photos.length
+            })
+
         }
     }
 
-    takeGaleryPhoto = async () => {
+    const takeGaleryPhoto = async () => {
         const photo = await ImagePicker.takeGaleryPhoto()
         if (photo) {
-            this.setState(prevState => ({
-                photos: [...prevState.photos, photo],
-                activePhotoIndex: prevState.photos.length
-            }))
-        }
-    }
-
-    addMemo = () => {
-        const { descriptionText, photos } = this.state
-        this.props.addmemo(descriptionText, photos)
-        this.props.navigation.goBack()
-    }
-
-    deletePhoto = () => {
-        if (this.state.photos.length !== 0) {
-            this.setState(prevState => {
-                const { photos, activePhotoIndex } = prevState
-                return {
-                    photos: photos.filter((item, index) => index !== activePhotoIndex),
-                    activePhotoIndex: activePhotoIndex === photos.length - 1 ?
-                        activePhotoIndex - 1 : activePhotoIndex
-                }
+            setState({
+                photos: [...state.photos, photo],
+                activeIndex: state.photos.length
             })
         }
     }
+    const handleConfirmButton = () => {
+        dispatch(addMemo(descriptionText, state.photos))
+        navigation.goBack()
+    }
 
-    handleSwipe = (index: number) => {
-        this.setState({
-            activePhotoIndex: index
+    const handleSwipe = (index: number) => {
+        setState({
+            photos: [...state.photos],
+            activeIndex: index
         })
     }
 
-    addDesctiption = () => {
-        this.setState({
-            modalActive: true
-        })
+    const addDesctiption = () => {
+        setModalActive(true)
     }
 
-    onDescriptionTextChange = (text: string) => {
-        this.setState({
-            descriptionText: text
-        })
+    const onDescriptionTextChange = (text: string) => {
+        setDescriptionText(text)
     }
 
-    onDescriptionAccept = () => {
-        this.setState({
-            modalActive: false
-        })
+    const onDescriptionAccept = () => {
+        setModalActive(false)
     }
 
-    noPhotoContent = () => {
+    const noPhotoContent = () => {
         return (
             <View style={{ alignItems: "center" }}>
-                <Text adjustsFontSizeToFit={true} style={styles.initialText}>{appStrings.emptyPhotoSeriesLabel}</Text>
+                <Text adjustsFontSizeToFit={true} >{appStrings.emptyPhotoSeriesLabel}</Text>
             </View>
         )
     }
 
-    render() {
-        const { photos, activePhotoIndex, modalActive, descriptionText } = this.state
-        return (
-            <View style={styles.container}>
-                <View style={styles.mainContent}>
-                    {photos.length === 0 ?
-                        this.noPhotoContent() :
-                        <ImageSwiper
-                            photos={photos}
-                            activePhotoIndex={activePhotoIndex}
-                            onIndexChange={this.handleSwipe}
-                        />
-                    }
-                </View>
-                <ImageSwiperBottomBar
-                    iconSize={30}
-                    addCameraPhotoPress={this.takeCameraPhoto}
-                    addGaleryPhotoPress={this.takeGaleryPhoto}
-                    addDescriptionPress={this.addDesctiption}
-                    donePress={this.addMemo}
-                    doneButtonActive={photos.length === 0 ? false : true}
-                />
-                <Modal
-                    animated
-                    animationType="slide"
-                    hardwareAccelerated={true}
-                    visible={modalActive}
-                    onRequestClose={() => this.setState({
-                        modalActive: false
-                    })}>
-                    <MemoDescriptionTextInput
-                        visible={modalActive}
-                        text={descriptionText}
-                        onTextChange={this.onDescriptionTextChange}
-                        onAccept={this.onDescriptionAccept}
+    return (
+        <View style={styles.container}>
+            <View style={styles.mainContent}>
+                {state.photos.length === 0 ?
+                    noPhotoContent() :
+                    <ImageSwiper
+                        photos={state.photos}
+                        activePhotoIndex={state.activeIndex}
+                        onIndexChange={handleSwipe}
                     />
-                </Modal>
+                }
             </View>
-        )
-    }
+            <ImageSwiperBottomBar
+                iconSize={30}
+                addCameraPhotoPress={takeCameraPhoto}
+                addGaleryPhotoPress={takeGaleryPhoto}
+                addDescriptionPress={addDesctiption}
+                donePress={handleConfirmButton}
+                doneButtonActive={state.photos.length === 0 ? false : true}
+            />
+            <Modal
+                animated
+                animationType="slide"
+                hardwareAccelerated={true}
+                visible={modalActive}
+                onRequestClose={() => setModalActive(false)}>
+                < MemoDescriptionTextInput
+                    visible={modalActive}
+                    text={descriptionText}
+                    onTextChange={onDescriptionTextChange}
+                    onAccept={onDescriptionAccept}
+
+                />
+            </Modal>
+        </View >
+    )
+
 }
-
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) => ({
-    addmemo: (name: string, photoList: Photo[]) => dispatch(addMemo(name, photoList))
-})
-
-export const MemoSeriesPreviewScreen = connect(null, mapDispatchToProps)(MemoSeriesPreview)
 
 const styles = StyleSheet.create({
     container: {
