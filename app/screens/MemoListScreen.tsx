@@ -54,7 +54,7 @@ export const MemoListView: FC<Props> = (props) => {
                 />
             ),
         });
-    }, []);
+    }, [isLocked]);
 
     useEffect(() => {
         StatusBar.setBackgroundColor(Color.statusBar)
@@ -69,7 +69,7 @@ export const MemoListView: FC<Props> = (props) => {
     }, [settings])
 
     const handleSettingsButtonPress = () => {
-        if (!isLocked) {
+        if (isLocked === false) {
             props.navigation.navigate("Settings")
         }
     }
@@ -117,10 +117,11 @@ export const MemoListView: FC<Props> = (props) => {
     }
 
     const handleUnlock = async () => {
-        setLocked(!await authorize("Authorize yourself to unlock memos"))
+        const x = await authorize("Authorize yourself to unlock memos")
+        setLocked(!x)
     }
 
-    if (isLocked) {
+    if (isLocked === true) {
         return (
             <View style={styles.container}>
                 <UnlockButton
@@ -130,8 +131,9 @@ export const MemoListView: FC<Props> = (props) => {
             </View>
         )
     }
+    
     return (
-        <Loader isLoading={!settings} style={styles.container}>
+        <Loader isLoading={isLocked === undefined || memos === undefined} style={styles.container}>
             <MemoList
                 memos={memos!}
                 onItemPress={handleMemoItemPress}

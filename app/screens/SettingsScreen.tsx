@@ -1,57 +1,45 @@
-import React from "react"
+import React, { FC, useState, useEffect } from "react"
 import { SafeAreaView, StyleSheet, View, Text, Switch } from "react-native"
 import { AppState } from "../store";
-import { ThunkDispatch } from "redux-thunk";
-import { AnyAction } from "redux";
 import { Settings } from "../model";
-import { setSettings } from "../store/settings"
-import { connect } from "react-redux";
+import { setSettings, getSettings } from "../store/settings"
+import { useDispatch, useSelector } from "react-redux";
 import * as LocalAuthService from "../api/LocalAuthService";
 import { appStrings } from "../config/Strings";
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+export const SettingsScreen: FC = props => {
+    const [authorizationPossible, setAuthorizationPossible] = useState<boolean | undefined>(undefined)
+    const [x, setx] = useState(false)
+    const settings = useSelector((state: AppState) => state.settings.settings)
+    const dispatch = useDispatch()
 
-interface State {
-    authorizationPossible: boolean | null
-}
+    useEffect(() => {
+        setx(settings!.memoListSecured)
+        LocalAuthService.isDeviceSecured()
+            .then(value => setAuthorizationPossible(value))
+    }, [])
 
-class SettingsView extends React.Component<Props, State> {
-    state = {
-        authorizationPossible: null
-    }
-    async componentDidMount() {
-        this.setState({
-            authorizationPossible: await LocalAuthService.isDeviceSecured()
-        })
-    }
-    handleChange = (value: boolean) => {
+    const handleChange = (value: boolean) => {
         const newSettings: Settings = {
             memoListSecured: value
         }
-        this.props.setSettings(newSettings)
+        setx(value)
+        dispatch(setSettings(newSettings))
     }
-    render() {
-        const { authorizationPossible } = this.state
-        return (
-            <SafeAreaView style={styles.container}>
-                <View style={[styles.settingRow, authorizationPossible ? styles.active : styles.inactive]}>
-                    <Text>{appStrings.secureMemosSettingLabel}</Text>
-                    <Switch disabled={!authorizationPossible} value={this.props.memoListSecured} onValueChange={this.handleChange} style={styles.switch}></Switch>
-                </View>
-            </SafeAreaView >
-        )
-    }
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <View style={[styles.settingRow, authorizationPossible ? styles.active : styles.inactive]}>
+                <Text>{appStrings.secureMemosSettingLabel}</Text>
+                <Switch
+                    disabled={!authorizationPossible}
+                    value={x}
+                    onValueChange={handleChange}
+                    style={styles.switch} />
+            </View>
+        </SafeAreaView >
+    )
 }
-
-const mapStateToProps = (state: AppState) => ({
-    memoListSecured: state.settings.settings!.memoListSecured
-});
-
-const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, null, AnyAction>) => ({
-    setSettings: (settings: Settings) => dispatch(setSettings(settings))
-})
-
-export const SettingsScreen = connect(mapStateToProps, mapDispatchToProps)(SettingsView)
 
 const styles = StyleSheet.create({
     container: {

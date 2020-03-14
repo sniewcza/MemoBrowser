@@ -21,7 +21,7 @@ export const getSettings: AsyncActionCreator<GetSettings> = () => {
 
 export const setSettings: AsyncActionCreator<SetSettings> = (settings: Settings) => {
     return async dispatch => {
-        await SettingStorage.setSettings(settings)
+         SettingStorage.setSettings(settings)
         return dispatch({
             type: "SET_SETTINGS",
             settings

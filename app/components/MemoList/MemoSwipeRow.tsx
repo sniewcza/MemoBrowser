@@ -143,6 +143,7 @@ export class MemoSwipeRow extends React.Component<Props, State>{
                     body={!renameMode ?
                         <TouchableNativeFeedback
                             onPress={this.onPress}
+                            delayLongPress={200}
                             onLongPress={onLongPress}>
                             <MemoListItem
                                 style={styles.listItem}
