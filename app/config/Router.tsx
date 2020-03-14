@@ -1,4 +1,4 @@
-import { MemoListScreen } from "../screens/MemoListScreen"
+import { MemoListView } from "../screens/MemoListScreen"
 import { MemoSeriesPreview } from "../screens/MemoSeriesPreview"
 import { MemoSeriesDetails } from "../screens/MemoSeriesDetails"
 import { SettingsScreen } from "../screens/SettingsScreen"
@@ -31,7 +31,7 @@ const routeNavigatior = () => {
             <rootStack.Navigator   >
                 <rootStack.Screen
                     name="Main Screen"
-                    component={MemoListScreen}
+                    component={MemoListView}
                     options={getDefaultScreenOptionsForTitle(appStrings.memoScreenTitle)}
                 />
                 <rootStack.Screen
