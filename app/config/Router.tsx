@@ -50,6 +50,11 @@ const routeNavigatior = () => {
                         ...TransitionPresets.ScaleFromCenterAndroid
                     })}
                 />
+                <rootStack.Screen
+                    name="Settings"
+                    component={SettingsScreen}
+                    options={getDefaultScreenOptionsForTitle(appStrings.settingsScreenTitle)}
+                />
             </rootStack.Navigator>
         </NavigationContainer>
     )

@@ -1,38 +1,22 @@
-import React from "react"
-import { Animated } from "react-native";
+import React, { FC } from "react"
 import { IconButton } from "./IconButton"
-import { transform } from "@babel/core";
+import Animated, { Value, Easing } from "react-native-reanimated"
+import { loop, bInterpolate } from "react-native-redash"
+const { useCode, set } = Animated
 
 interface Props {
     animated: boolean
     onPress: () => void
+    color?: string
 }
 
-export class UnlockButton extends React.PureComponent<Props> {
-    animatedScale = new Animated.Value(1)
-    componentDidMount() {
-        if (this.props.animated) {
-            Animated.loop(
-                Animated.sequence([
-                    Animated.timing(this.animatedScale, {
-                        toValue: 1.3,
-                        duration: 1000,
-                        delay: 500,
-                        useNativeDriver: true
-                    }),
-                    Animated.timing(this.animatedScale, {
-                        toValue: 1,
-                        duration: 1000,
-                        useNativeDriver: true
-                    })
-                ])).start()
-        }
-    }
-    render() {
-        return (
-            <Animated.View style={{ transform: [{ scale: this.animatedScale }] }}>
-                <IconButton iconName="md-lock" iconSize={100} color="blue" onPress={this.props.onPress}></IconButton>
-            </Animated.View >
-        )
-    }
+export const UnlockButton: FC<Props> = props => {
+    const animationValue = new Value(0)
+    const scale = bInterpolate(animationValue, 1, 1.3)
+    props.animated && useCode(() => set(animationValue, loop({ duration: 1000, easing: Easing.inOut(Easing.ease), boomerang: true })), [animationValue])
+    return (
+        <Animated.View style={{ transform: [{ scale }] }}>
+            <IconButton iconName="md-lock" iconSize={100} color={props.color || "blue"} onPress={props.onPress}></IconButton>
+        </Animated.View >
+    )
 }

@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from 'react';
-import { StyleSheet, View, StatusBar, Dimensions, UIManager, LayoutAnimation, LayoutAnimationConfig, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, StatusBar, UIManager, LayoutAnimation, LayoutAnimationConfig } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { useSelector, useDispatch } from "react-redux"
@@ -10,9 +10,11 @@ import { IconButton } from '../components/Buttons/IconButton';
 import { Loader } from '../components/Loaders/Loader';
 import { UnlockButton } from '../components/Buttons/UnlockButton';
 import { authorize } from "../api/LocalAuthService"
+import { StackNavigationProp } from "@react-navigation/stack"
 import Animated from "react-native-reanimated"
 import { bInterpolate, useTimingTransition } from "react-native-redash"
-const { Value } = Animated
+
+type NavigationProp = StackNavigationProp<{ [x: string]: any }, "Main Screen">
 
 const CustomlayoutAnimationConfig: LayoutAnimationConfig = {
     duration: 500,
@@ -21,28 +23,56 @@ const CustomlayoutAnimationConfig: LayoutAnimationConfig = {
         property: LayoutAnimation.Properties.opacity
     },
 }
-
+type Props = {
+    navigation: NavigationProp
+}
 
 UIManager.setLayoutAnimationEnabledExperimental &&
     UIManager.setLayoutAnimationEnabledExperimental(true);
 
-export const MemoListView: FC = (props) => {
+export const MemoListView: FC<Props> = (props) => {
     const [deletionMode, setDeletionMode] = useState(false)
     const [memosToDelete, setMemosToDelete] = useState<string[]>([])
+    const [isLocked, setLocked] = useState<boolean | undefined>(undefined)
     const dispatch = useDispatch()
     const memos = useSelector((state: AppState) => state.memos.memos)
+    const settings = useSelector((state: AppState) => state.settings.settings)
     const transition = useTimingTransition(deletionMode, { duration: 150 })
     const opacity = bInterpolate(transition, 1, 0)
     const scale = bInterpolate(transition, 1, 0)
     const menuBarTranslateY = bInterpolate(transition, 50, 0)
+
+    React.useLayoutEffect(() => {
+        props.navigation.setOptions({
+            headerRight: () => (
+                <IconButton
+                    iconName="md-settings"
+                    color={Color.onPrimary}
+                    iconSize={30}
+                    style={styles.headerButton}
+                    onPress={handleSettingsButtonPress}
+                />
+            ),
+        });
+    }, []);
+
     useEffect(() => {
+        StatusBar.setBackgroundColor(Color.statusBar)
         dispatch(loadMemos())
+        dispatch(getSettings())
     }, [])
-    // const handleSettingsButtonPress = () => {
-    //     if (!state.isLocked) {
-    //         props.navigation.navigate("Settings")
-    //     }
-    // }
+
+    useEffect(() => {
+        if (settings) {
+            setLocked(settings.memoListSecured)
+        }
+    }, [settings])
+
+    const handleSettingsButtonPress = () => {
+        if (!isLocked) {
+            props.navigation.navigate("Settings")
+        }
+    }
 
     const handleActionButtonPress = () => {
         !deletionMode && props.navigation.navigate("Preview Screen")
@@ -86,21 +116,22 @@ export const MemoListView: FC = (props) => {
         }
     }
 
-    // const handleUnlock = async () => {
-    //     setState({
-    //         isLocked: !await authorize("Authorize yourself to unlock memos")
-    //     })
-    // }
+    const handleUnlock = async () => {
+        setLocked(!await authorize("Authorize yourself to unlock memos"))
+    }
 
-    // if (state.isLocked) {
-    //     return (
-    //         <View style={styles.container}>
-    //             <UnlockButton animated={true} onPress={handleUnlock}></UnlockButton>
-    //         </View>
-    //     )
-    // }
+    if (isLocked) {
+        return (
+            <View style={styles.container}>
+                <UnlockButton
+                    animated={true}
+                    onPress={handleUnlock}
+                    color={Color.primary} />
+            </View>
+        )
+    }
     return (
-        <Loader isLoading={false} style={styles.container}>
+        <Loader isLoading={!settings} style={styles.container}>
             <MemoList
                 memos={memos!}
                 onItemPress={handleMemoItemPress}
