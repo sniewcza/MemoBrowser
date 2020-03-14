@@ -40,18 +40,20 @@ export const MemoListView: FC<Props> = (props) => {
     const transition = useTimingTransition(deletionMode, { duration: 150 })
     const opacity = bInterpolate(transition, 1, 0)
     const scale = bInterpolate(transition, 1, 0)
+    const rotation = bInterpolate(transition, 0, Math.PI * 2)
     const menuBarTranslateY = bInterpolate(transition, 50, 0)
 
     React.useLayoutEffect(() => {
         props.navigation.setOptions({
             headerRight: () => (
-                <IconButton
-                    iconName="md-settings"
-                    color={Color.onPrimary}
-                    iconSize={30}
-                    style={styles.headerButton}
-                    onPress={handleSettingsButtonPress}
-                />
+                <Animated.View style={[styles.headerButton, { transform: [{ rotateZ: rotation }] }]}>
+                    <IconButton
+                        iconName="md-settings"
+                        color={Color.onPrimary}
+                        iconSize={30}
+                        onPress={handleSettingsButtonPress}
+                    />
+                </Animated.View >
             ),
         });
     }, [isLocked]);
@@ -131,7 +133,7 @@ export const MemoListView: FC<Props> = (props) => {
             </View>
         )
     }
-    
+
     return (
         <Loader isLoading={isLocked === undefined || memos === undefined} style={styles.container}>
             <MemoList
@@ -167,12 +169,12 @@ const styles = StyleSheet.create({
     },
     actionButton: {
         position: 'absolute',
-        right: 30,
+        right: 20,
         bottom: 30
     },
     headerButton: {
         padding: 4,
-        marginRight: 20
+        right: 20,
     },
     menuBar: {
         position: 'absolute',
