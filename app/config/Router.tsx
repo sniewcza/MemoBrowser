@@ -47,13 +47,13 @@ const routeNavigatior = () => {
                         ...getDefaultScreenOptionsForTitle(route.params.memo.name),
                         gestureEnabled: true,
                         gestureDirection: "horizontal",
-                        ...TransitionPresets.ScaleFromCenterAndroid
+                        ...TransitionPresets.FadeFromBottomAndroid
                     })}
                 />
                 <rootStack.Screen
                     name="Settings"
                     component={SettingsScreen}
-                    options={getDefaultScreenOptionsForTitle(appStrings.settingsScreenTitle)}
+                    options={{ ...getDefaultScreenOptionsForTitle(appStrings.settingsScreenTitle), }}
                 />
             </rootStack.Navigator>
         </NavigationContainer>

@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { ImageSwiper } from "../components/ImageSwpier/ImageSwiper"
-import { Modal, View, Text, StyleSheet, Keyboard, PushNotificationIOS } from "react-native"
+import { Modal, View, Text, StyleSheet, Keyboard } from "react-native"
 import { ImageSwiperBottomBar } from "../components/ImageSwpier/ImageSwiperBottomBar"
 import { MemoDescriptionTextInput } from "../components/TextInputs/MemoDescriptionTextInput"
 import ImagePicker from "../api/ImagePicker"

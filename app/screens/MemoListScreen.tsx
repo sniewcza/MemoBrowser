@@ -1,5 +1,5 @@
-import React, { FC, useState, useEffect } from 'react';
-import { StyleSheet, View, StatusBar, UIManager, LayoutAnimation, LayoutAnimationConfig } from 'react-native';
+import React, { FC, useState, useEffect, useCallback, memo } from 'react';
+import { StyleSheet, View, StatusBar } from 'react-native';
 import { ActionButton } from "../components/Buttons/ActionButton"
 import { MemoList } from "../components/MemoList/MemoList"
 import { useSelector, useDispatch } from "react-redux"
@@ -16,21 +16,12 @@ import { bInterpolate, useTimingTransition } from "react-native-redash"
 
 type NavigationProp = StackNavigationProp<{ [x: string]: any }, "Main Screen">
 
-const CustomlayoutAnimationConfig: LayoutAnimationConfig = {
-    duration: 500,
-    update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity
-    },
-}
+
 type Props = {
     navigation: NavigationProp
 }
 
-UIManager.setLayoutAnimationEnabledExperimental &&
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-
-export const MemoListView: FC<Props> = (props) => {
+export const MemoListView: FC<Props> = props => {
     const [deletionMode, setDeletionMode] = useState(false)
     const [memosToDelete, setMemosToDelete] = useState<string[]>([])
     const [isLocked, setLocked] = useState<boolean | undefined>(undefined)
@@ -40,7 +31,7 @@ export const MemoListView: FC<Props> = (props) => {
     const transition = useTimingTransition(deletionMode, { duration: 150 })
     const opacity = bInterpolate(transition, 1, 0)
     const scale = bInterpolate(transition, 1, 0)
-    const rotation = bInterpolate(transition, 0, Math.PI * 2)
+    const rotation = bInterpolate(transition, 0, Math.PI)
     const menuBarTranslateY = bInterpolate(transition, 50, 0)
 
     React.useLayoutEffect(() => {
@@ -80,24 +71,25 @@ export const MemoListView: FC<Props> = (props) => {
         !deletionMode && props.navigation.navigate("Preview Screen")
     }
 
-    const handleDeleteMemo = (id: string) => {
+    const handleDeleteMemo = useCallback((id: string) => {
         dispatch(removeMemo(id))
-    }
+    }, [])
 
-    const handleMemoItemPress = (id: string) => {
+
+    const handleMemoItemPress = useCallback((id: string) => {
         const memo = memos!.find(memo => memo.id === id)
         props.navigation.push("Details Screen", { memo })
-    }
+    }, [memos])
 
-    const handleRenameMemo = (id: string, newName: string) => {
+    const handleRenameMemo = useCallback((id: string, newName: string) => {
         dispatch(renameMemo(id, newName))
-    }
+    }, [])
 
-    const handleMemoItemLongPress = () => {
+    const handleMemoItemLongPress = useCallback(() => {
         setDeletionMode(true)
-    }
+    }, [])
 
-    const handleMemoItemCheckChange = (id: string) => {
+    const handleMemoItemCheckChange = useCallback((id: string) => {
         const index = memosToDelete.findIndex(item => item === id)
         if (index !== -1) {
             setMemosToDelete([...memosToDelete.slice(0, index), ...memosToDelete.slice(index + 1)])
@@ -105,7 +97,7 @@ export const MemoListView: FC<Props> = (props) => {
         else {
             setMemosToDelete([...memosToDelete, id])
         }
-    }
+    }, [])
 
     const cancelDeletionMode = () => {
         setDeletionMode(false)
@@ -119,8 +111,8 @@ export const MemoListView: FC<Props> = (props) => {
     }
 
     const handleUnlock = async () => {
-        const x = await authorize("Authorize yourself to unlock memos")
-        setLocked(!x)
+        const authorized = await authorize("Authorize yourself to unlock memos")
+        setLocked(!authorized)
     }
 
     if (isLocked === true) {

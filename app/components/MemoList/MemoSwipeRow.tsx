@@ -1,6 +1,6 @@
-import React from "react";
+import React, { FC, useEffect, useState } from "react";
 import { SwipeRow } from "native-base"
-import { View, StyleSheet, TouchableNativeFeedback, TextInput, Animated, TransformsStyle, Keyboard, EmitterSubscription } from "react-native"
+import { View, StyleSheet, TouchableNativeFeedback, TextInput, Keyboard } from "react-native"
 import SubMenuButton from "../Buttons/MemoListItemSubmenuButton"
 import Icon from "react-native-vector-icons/Ionicons"
 import { deleteMemoAlert } from "../Alerts/DeleteMemoAlert"
@@ -18,173 +18,118 @@ interface Props {
     onCheck: (id: string) => any
 }
 
-interface State {
-    renameMode: boolean
-    checked: boolean
-    memoName: string
-}
+export const MemoSwipeRow: FC<Props> = props => {
+    let row: SwipeRow | null
+    const [renameMode, setRenameMode] = useState<boolean>(false)
+    const [checked, setChecked] = useState(false)
+    const [memoName, setMemoName] = useState("")
 
-export class MemoSwipeRow extends React.Component<Props, State>{
-    private keyboardEventSubscription: EmitterSubscription | null
-    private animated: Animated.Value
-    private animatedStyle: TransformsStyle
-    private row: SwipeRow | null
-    constructor(props: Props) {
-        super(props)
-        this.row = null
-        this.keyboardEventSubscription = null
-        this.animated = new Animated.Value(0)
-        this.animatedStyle = {
-            transform: [
-                {
-                    scale: this.animated.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [1, 0],
-                    }) as any as number
-                }
-            ]
-        }
-        this.state = {
-            renameMode: false,
-            memoName: this.props.memo.name,
-            checked: false
+    useEffect(() => {
+        return () => Keyboard.addListener("keyboardDidHide", keyboardDidHide).remove()
+    }, [])
+
+    useEffect(() => {
+        closeRow()
+        setChecked(false)
+    }, [props.deletionMode])
+
+    const keyboardDidHide = () => {
+        if (renameMode) {
+            setRenameMode(false)
         }
     }
 
-    componentDidMount() {
-        Keyboard.addListener("keyboardDidHide", this.keyboardDidHide)
-    }
-
-    componentWillUnmount() {
-        if (this.keyboardEventSubscription) {
-            this.keyboardEventSubscription.remove()
-        }
-    }
-
-    componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
-        if (this.props.deletionMode === true && prevProps.deletionMode === false) {
-            this.closeRow()
-            this.setState({
-                checked: false
-            })
-        }
-    }
-
-    keyboardDidHide = () => {
-        if (this.state.renameMode) {
-            this.setState({
-                renameMode: false
-            })
-        }
-    }
-
-    deleteMemo = () => {
-        this.closeRow()
+    const deleteMemo = () => {
+        closeRow()
         deleteMemoAlert(() => {
-            Animated.timing(this.animated, {
-                toValue: 1,
-                duration: 400,
-                useNativeDriver: true
-            }).start(() => this.props.onDelete(this.props.memo.id))
-
+            props.onDelete(props.memo.id)
         })
     }
 
-    onPress = () => {
-        if (this.props.deletionMode) {
-            this.setState({
-                checked: !this.state.checked
-            })
-            this.props.onCheck(this.props.memo.id)
+    const onPress = () => {
+        if (props.deletionMode) {
+            setChecked(!checked)
+            props.onCheck(props.memo.id)
         }
         else {
-            this.closeRow()
-            this.props.onPress(this.props.memo.id)
+            closeRow()
+            props.onPress(props.memo.id)
         }
     }
 
-    closeRow = () => {
-        if (this.row)
-            this.row._root.closeRow();
+    const closeRow = () => {
+        if (row)
+            row._root.closeRow();
     }
 
-    renameMemo = () => {
-        this.closeRow()
-        this.setState({
-            renameMode: true
-        })
+    const renameMemo = () => {
+        closeRow()
+        setRenameMode(true)
     }
 
-    closeTextInput = () => {
-        this.props.onRename(this.props.memo.id, this.state.memoName)
-        this.setState({
-            renameMode: false
-        })
+    const closeTextInput = () => {
+        props.onRename(props.memo.id, memoName)
+        setRenameMode(false)
     }
 
-    handleTextChange = (text: string) => {
-        this.setState({
-            memoName: text
-        })
+    const handleTextChange = (text: string) => {
+        setMemoName(text)
     }
 
-    render() {
-        const { deletionMode, onLongPress, memo } = this.props
-        const { renameMode, checked, memoName } = this.state
-        return (
-            <Animated.View style={this.animatedStyle}>
-                <SwipeRow
-                    style={styles.swipeRow}
-                    rightOpenValue={-100}
-                    stopRightSwipe={-100}
-                    disableRightSwipe
-                    disableLeftSwipe={deletionMode}
-                    ref={ref => this.row = ref}
-                    body={!renameMode ?
-                        <TouchableNativeFeedback
-                            onPress={this.onPress}
-                            delayLongPress={200}
-                            onLongPress={onLongPress}>
-                            <MemoListItem
-                                style={styles.listItem}
-                                name={memo.name}
-                                creationDate={memo.creationDate}
-                                photosCount={memo.photos.length}
-                                deletionMode={deletionMode}
-                                checked={checked}
-                            />
-                        </TouchableNativeFeedback>
-                        :
-                        <View style={styles.listItem}>
-                            <TextInput
-                                autoFocus
-                                placeholder={memoName}
-                                value={memoName}
-                                onChangeText={this.handleTextChange}
-                                onBlur={this.closeTextInput}
-                            />
-                        </View>
-                    }
-                    right={
-                        <View style={styles.subMenu}>
-                            <SubMenuButton onPress={this.renameMemo} style={styles.renameButton}>
-                                <Icon name="md-create" size={30} color={Color.onPrimary}></Icon>
-                            </SubMenuButton>
-                            <SubMenuButton onPress={this.deleteMemo} style={styles.deleteButton}>
-                                <Icon name="md-trash" size={30} color={Color.onPrimary}></Icon>
-                            </SubMenuButton>
-                        </View>
-                    }
-                ></SwipeRow >
-            </Animated.View>
-        )
-    }
+    const { deletionMode, onLongPress, memo } = props
+    return (
+        <SwipeRow
+            style={styles.swipeRow}
+            rightOpenValue={-100}
+            stopRightSwipe={-100}
+            disableRightSwipe
+            disableLeftSwipe={deletionMode}
+            ref={ref => row = ref}
+            body={!renameMode ?
+                <TouchableNativeFeedback
+                    onPress={onPress}
+                    delayLongPress={100}
+                    onLongPress={onLongPress}>
+                    <MemoListItem
+                        style={styles.listItem}
+                        name={memo.name}
+                        creationDate={memo.creationDate}
+                        photosCount={memo.photos.length}
+                        deletionMode={deletionMode}
+                        checked={checked}
+                    />
+                </TouchableNativeFeedback>
+                :
+                <View style={styles.listItem}>
+                    <TextInput
+                        autoFocus
+                        placeholder={memoName}
+                        value={memoName}
+                        onChangeText={handleTextChange}
+                        onBlur={closeTextInput}
+                    />
+                </View>
+            }
+            right={
+                <View style={styles.subMenu}>
+                    <SubMenuButton onPress={renameMemo} style={styles.renameButton}>
+                        <Icon name="md-create" size={30} color={Color.onPrimary} />
+                    </SubMenuButton>
+                    <SubMenuButton onPress={deleteMemo} style={styles.deleteButton}>
+                        <Icon name="md-trash" size={30} color={Color.onPrimary} />
+                    </SubMenuButton>
+                </View>
+            }
+        />
+
+    )
+
 }
 
 const styles = StyleSheet.create({
     swipeRow: {
         width: "100%",
-        height: 48,
+        height: 56,
         paddingRight: 0, // override default swpieRow styles
         paddingTop: 0,// override default swpieRow styles
         paddingBottom: 0,// override default swpieRow styles

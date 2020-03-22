@@ -2,19 +2,19 @@ import React, { FC, useState, useEffect } from "react"
 import { SafeAreaView, StyleSheet, View, Text, Switch } from "react-native"
 import { AppState } from "../store";
 import { Settings } from "../model";
-import { setSettings, getSettings } from "../store/settings"
+import { setSettings } from "../store/settings"
 import { useDispatch, useSelector } from "react-redux";
 import * as LocalAuthService from "../api/LocalAuthService";
 import { appStrings } from "../config/Strings";
 
 export const SettingsScreen: FC = props => {
     const [authorizationPossible, setAuthorizationPossible] = useState<boolean | undefined>(undefined)
-    const [x, setx] = useState(false)
+    const [switchValue, setSwitchValue] = useState(false)
     const settings = useSelector((state: AppState) => state.settings.settings)
     const dispatch = useDispatch()
 
     useEffect(() => {
-        setx(settings!.memoListSecured)
+        setSwitchValue(settings!.memoListSecured)
         LocalAuthService.isDeviceSecured()
             .then(value => setAuthorizationPossible(value))
     }, [])
@@ -23,7 +23,7 @@ export const SettingsScreen: FC = props => {
         const newSettings: Settings = {
             memoListSecured: value
         }
-        setx(value)
+        setSwitchValue(value)
         dispatch(setSettings(newSettings))
     }
 
@@ -33,7 +33,7 @@ export const SettingsScreen: FC = props => {
                 <Text>{appStrings.secureMemosSettingLabel}</Text>
                 <Switch
                     disabled={!authorizationPossible}
-                    value={x}
+                    value={switchValue}
                     onValueChange={handleChange}
                     style={styles.switch} />
             </View>

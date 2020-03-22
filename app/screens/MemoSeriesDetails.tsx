@@ -4,7 +4,6 @@ import { Photo } from "../model";
 
 type Orientation = "portrait" | "landscape";
 
-
 interface Props {
     navigation: any,
     route: any
@@ -44,7 +43,6 @@ export const MemoSeriesDetails: FC<Props> = (props) => {
                     height: width * 0.8 * aspectRatio
                 }
         }
-
     }
 
     const renderItem = ({ item }: { item: Photo }) => {
@@ -61,13 +59,11 @@ export const MemoSeriesDetails: FC<Props> = (props) => {
                 showsVerticalScrollIndicator={false}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.uri}
-                ItemSeparatorComponent={() => <View style={{ height: 5 }}></View>}>
-            </FlatList>
+                ItemSeparatorComponent={() => <View style={{ height: 5 }}></View>}
+            />
         </View>
     )
-
 }
-
 
 const styles = StyleSheet.create({
     container: {

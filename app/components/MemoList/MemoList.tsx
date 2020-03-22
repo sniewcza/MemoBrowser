@@ -1,8 +1,19 @@
-import React from "react";
+import React, { FC, useEffect, memo, } from "react";
 import { MemoSwipeRow } from "./MemoSwipeRow"
-import { FlatList, View, StyleSheet, Text } from "react-native"
+import { FlatList, View, StyleSheet, Text, UIManager, LayoutAnimationConfig, LayoutAnimation } from "react-native"
 import { Memo } from "../../model"
 import { appStrings } from "../../config/Strings";
+
+UIManager.setLayoutAnimationEnabledExperimental &&
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+
+const CustomlayoutAnimationConfig: LayoutAnimationConfig = {
+    duration: 150,
+    update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity
+    },
+}
 
 interface Props {
     memos: Memo[]
@@ -14,14 +25,14 @@ interface Props {
     onItemCheckChange: (id: string) => any
 }
 
-export class MemoList extends React.Component<Props>{
-    _renderItem = ({ item }: { item: Memo }) => {
+const List: FC<Props> = props => {
+    const renderItem = ({ item }: { item: Memo }) => {
         const { deletionMode,
             onItemPress,
             onItemLongPress,
             onItemDelete,
             onItemCheckChange,
-            onItemRename } = this.props
+            onItemRename } = props
         return (
             < MemoSwipeRow
                 memo={item}
@@ -35,7 +46,7 @@ export class MemoList extends React.Component<Props>{
         )
     }
 
-    listEmptyComponent = () => {
+    const listEmptyComponent = () => {
         return (
             <View style={styles.emptyList}>
                 <Text style={styles.text}>{appStrings.emptyMemoListLabel}</Text>
@@ -43,27 +54,22 @@ export class MemoList extends React.Component<Props>{
         )
     }
 
-    render() {
-        return (
-            <View style={styles.container}>
-                <FlatList
-                    data={this.props.memos}
-                    renderItem={this._renderItem}
-                    keyExtractor={(item: Memo) => item.id}
-                    ListEmptyComponent={this.listEmptyComponent}
-                    contentContainerStyle={{ flexGrow: 1 }}
-                >
-                </FlatList>
-            </View>
-        )
-    }
+    return (
+        <FlatList
+            data={props.memos}
+            renderItem={renderItem}
+            keyExtractor={(item: Memo) => item.id}
+            ListEmptyComponent={listEmptyComponent}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 10 }}
+        >
+        </FlatList>
+    )
+
 }
 
+export const MemoList = List
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        marginHorizontal: 15
-    },
     emptyList: {
         flex: 1,
         justifyContent: "center",
