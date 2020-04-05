@@ -1,19 +1,8 @@
-import React, { FC, useEffect, memo, } from "react";
+import React, { FC, memo, } from "react";
 import { MemoSwipeRow } from "./MemoSwipeRow"
-import { FlatList, View, StyleSheet, Text, UIManager, LayoutAnimationConfig, LayoutAnimation } from "react-native"
+import { FlatList, View, StyleSheet, Text } from "react-native"
 import { Memo } from "../../model"
 import { appStrings } from "../../config/Strings";
-
-UIManager.setLayoutAnimationEnabledExperimental &&
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-
-const CustomlayoutAnimationConfig: LayoutAnimationConfig = {
-    duration: 150,
-    update: {
-        type: LayoutAnimation.Types.easeInEaseOut,
-        property: LayoutAnimation.Properties.opacity
-    },
-}
 
 interface Props {
     memos: Memo[]
@@ -25,14 +14,8 @@ interface Props {
     onItemCheckChange: (id: string) => any
 }
 
-const List: FC<Props> = props => {
+const List: FC<Props> = ({ memos, deletionMode, onItemCheckChange, onItemDelete, onItemLongPress, onItemPress, onItemRename }) => {
     const renderItem = ({ item }: { item: Memo }) => {
-        const { deletionMode,
-            onItemPress,
-            onItemLongPress,
-            onItemDelete,
-            onItemCheckChange,
-            onItemRename } = props
         return (
             < MemoSwipeRow
                 memo={item}
@@ -56,19 +39,19 @@ const List: FC<Props> = props => {
 
     return (
         <FlatList
-            data={props.memos}
+            data={memos}
             renderItem={renderItem}
             keyExtractor={(item: Memo) => item.id}
             ListEmptyComponent={listEmptyComponent}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 10 }}
-        >
-        </FlatList>
+        />
     )
 
 }
 
-export const MemoList = List
+export const MemoList = memo(List)
+
 const styles = StyleSheet.create({
     emptyList: {
         flex: 1,

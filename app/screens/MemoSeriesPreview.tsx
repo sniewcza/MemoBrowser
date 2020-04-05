@@ -66,7 +66,6 @@ export const MemoSeriesPreview: FC = props => {
                 photos: [...state.photos, photo],
                 activeIndex: state.photos.length
             })
-
         }
     }
 

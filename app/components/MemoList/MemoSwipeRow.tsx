@@ -97,6 +97,7 @@ export const MemoSwipeRow: FC<Props> = props => {
                         photosCount={memo.photos.length}
                         deletionMode={deletionMode}
                         checked={checked}
+                        thumbnail={memo.photos[0].uri}
                     />
                 </TouchableNativeFeedback>
                 :
