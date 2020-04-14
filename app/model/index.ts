@@ -1,2 +1,2 @@
-export { Memo, Photo, Settings } from "./iterfaces"
+export { Memo, Photo, Settings } from "./interfaces"
 export { defaultSettings } from "./defaults"
