@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState, useCallback} from 'react';
 import {ImageSwiper} from '../components/ImageSwpier/ImageSwiper';
 import {
   Modal,
@@ -8,9 +8,9 @@ import {
   Keyboard,
   SafeAreaView,
 } from 'react-native';
-import {ImageSwiperBottomBar} from '../components/ImageSwpier/ImageSwiperBottomBar';
+import BottomMenuBar from '../components/ImageSwpier/ImageSwiperBottomBar';
 import {MemoDescriptionTextInput} from '../components/TextInputs/MemoDescriptionTextInput';
-import ImagePicker from '../api/ImagePicker';
+import * as ImagePicker from '../api/ImagePicker';
 import {useDispatch} from 'react-redux';
 import {addMemo} from '../store/index';
 import {Color} from '../config/ColorTheme';
@@ -19,13 +19,9 @@ import {Photo} from '../model';
 import {appStrings} from '../config/Strings';
 import {useNavigation} from '@react-navigation/native';
 
-interface State {
-  photos: Photo[];
-  activeIndex: number;
-}
-
 export const MemoSeriesPreview: FC = props => {
-  const [state, setState] = useState<State>({photos: [], activeIndex: -1});
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const [modalActive, setModalActive] = useState(false);
   const [descriptionText, setDescriptionText] = useState('');
   const dispatch = useDispatch();
@@ -42,13 +38,12 @@ export const MemoSeriesPreview: FC = props => {
   });
 
   const deletePhoto = () => {
-    const {photos, activeIndex} = state;
     if (photos.length !== 0) {
-      setState({
-        photos: [...photos.filter((item, index) => index !== activeIndex)],
-        activeIndex:
-          activeIndex === photos.length - 1 ? activeIndex - 1 : activeIndex,
-      });
+      const photosLength = photos.length;
+      setPhotos([...photos.filter((item, index) => index !== activeIndex)]);
+      setActiveIndex(
+        activeIndex === photosLength - 1 ? activeIndex - 1 : activeIndex,
+      );
     }
   };
 
@@ -70,40 +65,38 @@ export const MemoSeriesPreview: FC = props => {
     }
   };
 
-  const takeCameraPhoto = async () => {
+  const updatePhotoAndIndex = (photo: Photo) => {
+    const newPhotos = [...photos, photo];
+    setPhotos(newPhotos);
+    setActiveIndex(newPhotos.length - 1);
+  };
+
+  const takeCameraPhoto = useCallback(async () => {
     const photo = await ImagePicker.takeCameraPhoto();
     if (photo) {
-      setState({
-        photos: [...state.photos, photo],
-        activeIndex: state.photos.length,
-      });
+      updatePhotoAndIndex(photo);
     }
-  };
+  }, [photos]);
 
-  const takeGaleryPhoto = async () => {
+  const takeGaleryPhoto = useCallback(async () => {
     const photo = await ImagePicker.takeGaleryPhoto();
     if (photo) {
-      setState({
-        photos: [...state.photos, photo],
-        activeIndex: state.photos.length,
-      });
+      updatePhotoAndIndex(photo);
     }
-  };
-  const handleConfirmButton = () => {
-    dispatch(addMemo(descriptionText, state.photos));
+  }, [photos]);
+
+  const handleConfirmButton = useCallback(() => {
+    dispatch(addMemo(descriptionText, photos));
     navigation.goBack();
-  };
+  }, [photos]);
 
   const handleSwipe = (index: number) => {
-    setState({
-      photos: [...state.photos],
-      activeIndex: index,
-    });
+    setActiveIndex(index);
   };
 
-  const addDesctiption = () => {
+  const addDesctiption = useCallback(() => {
     setModalActive(true);
-  };
+  }, []);
 
   const onDescriptionTextChange = (text: string) => {
     setDescriptionText(text);
@@ -126,23 +119,23 @@ export const MemoSeriesPreview: FC = props => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContent}>
-        {state.photos.length === 0 ? (
+        {photos.length === 0 ? (
           noPhotoContent()
         ) : (
           <ImageSwiper
-            photos={state.photos}
-            activePhotoIndex={state.activeIndex}
+            photos={photos}
+            activePhotoIndex={activeIndex}
             onIndexChange={handleSwipe}
           />
         )}
       </View>
-      <ImageSwiperBottomBar
+      <BottomMenuBar
         iconSize={30}
         addCameraPhotoPress={takeCameraPhoto}
         addGaleryPhotoPress={takeGaleryPhoto}
         addDescriptionPress={addDesctiption}
         donePress={handleConfirmButton}
-        doneButtonActive={state.photos.length === 0 ? false : true}
+        doneButtonActive={photos.length !== 0}
       />
       <Modal
         animated
@@ -170,7 +163,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   mainContent: {
-    flex: 9,
+    flex: 1,
     justifyContent: 'center',
   },
 });

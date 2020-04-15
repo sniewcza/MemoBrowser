@@ -1,17 +1,17 @@
-import React, { FC, useEffect, useState } from "react";
+import React, {FC, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
-  TouchableNativeFeedback,
   TextInput,
+  TouchableWithoutFeedback,
   Keyboard,
-} from "react-native";
-import SubMenuButton from "../Buttons/MemoListItemSubmenuButton";
-import Icon from "react-native-vector-icons/Ionicons";
-import { deleteMemoAlert } from "../Alerts/deleteMemoAlert";
-import { MemoListItem } from "./MemoListItem";
-import { Memo } from "../../model";
-import { Color } from "../../config/ColorTheme";
+} from 'react-native';
+import SubMenuButton from '../Buttons/MemoListItemSubmenuButton';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {deleteMemoAlert} from '../Alerts/DeleteMemoAlert';
+import {MemoListItem} from './MemoListItem';
+import {Memo} from '../../model';
+import {Color} from '../../config/ColorTheme';
 
 interface Props {
   memo: Memo;
@@ -23,15 +23,15 @@ interface Props {
   onCheck: (id: string) => any;
 }
 
-export const MemoSwipeRow: FC<Props> = (props) => {
+export const MemoSwipeRow: FC<Props> = props => {
   let row: SwipeRow | null;
   const [renameMode, setRenameMode] = useState<boolean>(false);
   const [checked, setChecked] = useState(false);
-  const [memoName, setMemoName] = useState("");
+  const [memoName, setMemoName] = useState('');
 
   useEffect(() => {
     return () =>
-      Keyboard.addListener("keyboardDidHide", keyboardDidHide).remove();
+      Keyboard.addListener('keyboardDidHide', keyboardDidHide).remove();
   }, []);
 
   useEffect(() => {
@@ -80,43 +80,45 @@ export const MemoSwipeRow: FC<Props> = (props) => {
     setMemoName(text);
   };
 
-  const { deletionMode, onLongPress, memo } = props;
+  const {deletionMode, onLongPress, memo} = props;
   return (
-    <MemoListItem
-      style={styles.listItem}
-      name={memo.name}
-      creationDate={memo.creationDate}
-      photosCount={memo.photos.length}
-      deletionMode={deletionMode}
-      checked={checked}
-      thumbnail={memo.photos[0].uri}
-    />
+    <TouchableWithoutFeedback onPress={onPress} onLongPress={props.onLongPress}>
+      <MemoListItem
+        style={styles.listItem}
+        name={memo.name}
+        creationDate={memo.creationDate}
+        photosCount={memo.photos.length}
+        deletionMode={deletionMode}
+        checked={checked}
+        thumbnail={memo.photos[0].uri}
+      />
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   swipeRow: {
-    width: "100%",
+    width: '100%',
     height: 56,
     paddingRight: 0, // override default swpieRow styles
     paddingTop: 0, // override default swpieRow styles
     paddingBottom: 0, // override default swpieRow styles
-    borderBottomColor: "black",
+    borderBottomColor: 'black',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   listItem: {
-    flexDirection: "row",
-    width: "100%",
-    height: "100%",
+    flexDirection: 'row',
+    width: '100%',
+    height: '100%',
     paddingRight: 5,
-    alignItems: "center",
+    alignItems: 'center',
   },
   subMenu: {
     marginVertical: 1,
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "stretch",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'stretch',
   },
   deleteButton: {
     flex: 1,

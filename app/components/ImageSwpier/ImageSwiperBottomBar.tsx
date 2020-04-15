@@ -1,77 +1,73 @@
-import React from "react"
-import { View, StyleSheet } from "react-native"
-import { Color } from "../../config/ColorTheme"
-import { IconButton } from "../Buttons/IconButton"
+import React, {FC, memo} from 'react';
+import {View, StyleSheet} from 'react-native';
+import {Color} from '../../config/ColorTheme';
+import {IconButton} from '../Buttons/IconButton';
 
 interface Props {
-    iconSize: number;
-    doneButtonActive: boolean;
-    addCameraPhotoPress: () => any;
-    addGaleryPhotoPress: () => any;
-    addDescriptionPress: () => any;
-    donePress: () => any
+  iconSize?: number;
+  doneButtonActive: boolean;
+  addCameraPhotoPress: () => void;
+  addGaleryPhotoPress: () => void;
+  addDescriptionPress: () => void;
+  donePress: () => void;
 }
 
-export class ImageSwiperBottomBar extends React.PureComponent<Props> {
-    render() {
-        const {
-            addCameraPhotoPress,
-            addGaleryPhotoPress,
-            donePress,
-            doneButtonActive,
-            addDescriptionPress,
-            iconSize } = this.props
-        return (
-            <View style={styles.container}>
-                <IconButton
-                    onPress={addCameraPhotoPress}
-                    style={styles.active}
-                    iconName={"md-camera"}
-                    iconSize={iconSize}
-                    color={Color.onPrimary}
-                />
-                <IconButton
-                    onPress={addGaleryPhotoPress}
-                    style={styles.active}
-                    iconName={"md-image"}
-                    iconSize={iconSize}
-                    color={Color.onPrimary}
-                />
-                <IconButton
-                    onPress={addDescriptionPress}
-                    style={doneButtonActive ? styles.active : styles.inAcvtive}
-                    disabled={!doneButtonActive}
-                    iconName={"md-create"}
-                    iconSize={iconSize}
-                    color={Color.onPrimary}
-                />
-                <IconButton
-                    onPress={donePress}
-                    style={doneButtonActive ? styles.active : styles.inAcvtive}
-                    disabled={!doneButtonActive}
-                    iconName={"md-checkmark"}
-                    iconSize={iconSize}
-                    color={Color.onPrimary}
-                />
-            </View >
-        )
-    }
-}
+const DEFAULT_ICON_SIZE = 30;
 
+const ImageSwiperBottomBar: FC<Props> = ({
+  iconSize,
+  doneButtonActive,
+  addCameraPhotoPress,
+  addDescriptionPress,
+  addGaleryPhotoPress,
+  donePress,
+}) => {
+  return (
+    <View style={styles.container}>
+      <IconButton
+        onPress={addCameraPhotoPress}
+        iconName={'md-camera'}
+        iconSize={iconSize || DEFAULT_ICON_SIZE}
+        color={Color.onPrimary}
+      />
+      <IconButton
+        onPress={addGaleryPhotoPress}
+        iconName={'md-image'}
+        iconSize={iconSize || DEFAULT_ICON_SIZE}
+        color={Color.onPrimary}
+      />
+      <IconButton
+        onPress={addDescriptionPress}
+        style={doneButtonActive ? null : styles.inAcvtive}
+        disabled={!doneButtonActive}
+        iconName={'md-create'}
+        iconSize={iconSize || DEFAULT_ICON_SIZE}
+        color={Color.onPrimary}
+      />
+      <IconButton
+        onPress={donePress}
+        style={doneButtonActive ? null : styles.inAcvtive}
+        disabled={!doneButtonActive}
+        iconName={'md-checkmark'}
+        iconSize={iconSize || DEFAULT_ICON_SIZE}
+        color={Color.onPrimary}
+      />
+    </View>
+  );
+};
+
+export default memo(ImageSwiperBottomBar);
 const styles = StyleSheet.create({
-    container: {
-        height: 50,
-        width: "100%",
-        backgroundColor: Color.primary,
-        flexDirection: "row",
-        justifyContent: "space-evenly",
-        alignItems: "center",
-        borderTopWidth: StyleSheet.hairlineWidth
-    },
-    inAcvtive: {
-        opacity: 0.4
-    },
-    active: {
-        padding: 3
-    }
-})
+  container: {
+    paddingVertical: 4,
+    width: '100%',
+    backgroundColor: Color.primary,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  inAcvtive: {
+    opacity: 0.4,
+  },
+});
